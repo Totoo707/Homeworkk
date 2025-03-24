@@ -5,6 +5,8 @@
 # Ignorer les fichiers de configuration
 .env
 
+.next
+
 # Ignorer le dossier des dépendances
 node_modules/
 
