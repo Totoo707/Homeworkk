@@ -10,3 +10,4 @@
 # Ignorer le dossier des dépendances
 node_modules/
 
+*/node_modules/
