@@ -1,0 +1,10 @@
+ # Ignorer les fichiers temporaires
+*.tmp
+*.log
+
+# Ignorer les fichiers de configuration
+.env
+
+# Ignorer le dossier des dépendances
+node_modules/
+
