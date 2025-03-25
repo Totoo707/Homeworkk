@@ -49,7 +49,7 @@ export default function RootLayout({ children }) {
                         href="/deuxiemepage"
                         className="text-lg text-white hover:text-yellow-400 transition-colors duration-300"
                       >
-                        Page 2
+                        Articles
                       </Link>
                     </li>
                     <li>
@@ -57,23 +57,7 @@ export default function RootLayout({ children }) {
                         href="/troisiemepage"
                         className="text-lg text-white hover:text-yellow-400 transition-colors duration-300"
                       >
-                        Page 3
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        href="/pagelayout/"
-                        className="text-lg text-white hover:text-yellow-400 transition-colors duration-300"
-                      >
-                        Layout 1
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        href="/pagelayout/pagelayout2/"
-                        className="text-lg text-white hover:text-yellow-400 transition-colors duration-300"
-                      >
-                        Layout 2
+                        Ajout d'article
                       </Link>
                     </li>
                   </ul>

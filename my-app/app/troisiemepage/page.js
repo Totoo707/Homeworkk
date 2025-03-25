@@ -63,22 +63,12 @@ export default function Page() {
                 </li>
                 <li>
                   <Link href="/deuxiemepage" className="text-lg hover:text-yellow-400 transition">
-                    Page 2
+                    Articles
                   </Link>
                 </li>
                 <li>
                   <Link href="/troisiemepage" className="text-lg hover:text-yellow-400 transition">
-                    Page 3
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/pagelayout/" className="text-lg hover:text-yellow-400 transition">
-                    Layout 1
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/pagelayout/pagelayout2/" className="text-lg hover:text-yellow-400 transition">
-                    Layout 2
+                    Ajout d'article
                   </Link>
                 </li>
               </ul>
