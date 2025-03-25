@@ -3,6 +3,10 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import cors from 'cors';
 import { MongoClient, ObjectId } from 'mongodb';
+import dotenv from "dotenv";
+
+// Charger les variables d'environnement depuis le fichier .env
+dotenv.config();
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -14,11 +18,12 @@ app.use(cors({
 }));
 
 // Configuration MongoDB
-const MONGODB_URI = 'mongodb://thomas:monMotDePasse@localhost:27017/maBaseDeDonnées?authSource=maBaseDeDonnées';const DATABASE_NAME = 'maBaseDeDonnées'; // Remplacez par le nom de votre base de données
+const DATABASE_NAME = 'maBaseDeDonnées'; // Remplacez par le nom de votre base de données
 let db;
 
 // Connexion à MongoDB
-MongoClient.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+console.log('connexion' , process.env.MONGODB_URI)
+MongoClient.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(client => {
     db = client.db(DATABASE_NAME);
     console.log(`Connecté à la base de données : ${DATABASE_NAME}`);
