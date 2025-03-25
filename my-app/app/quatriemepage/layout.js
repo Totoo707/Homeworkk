@@ -70,6 +70,14 @@ export default function RootLayout({ children }) {
                     Contact
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    href="/quatriemepage/voirmessage"
+                    className="text-lg text-white hover:text-yellow-400 transition-colors duration-300"
+                  >
+                    Voir Le Contact
+                  </Link>
+                </li>
                   </ul>
                 </nav>
               </div>

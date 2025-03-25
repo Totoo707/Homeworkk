@@ -131,6 +131,40 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
+app.post('/api/contact', async (req, res) => {
+  const { name, email, message } = req.body;
+
+  // Validation des données
+  if (!name || !email || !message) {
+    return res.status(400).json({ message: 'Tous les champs sont obligatoires.' });
+  }
+
+  try {
+    const result = await db.collection('contact').insertOne({
+      nom: name,
+      email,
+      message,
+      date: new Date(), // Ajoute une date de création
+    });
+
+    res.status(201).json({ message: 'Message envoyé avec succès.', contactId: result.insertedId });
+  } catch (error) {
+    console.error('Erreur lors de l\'envoi du message :', error);
+    res.status(500).json({ message: 'Erreur lors de l\'envoi du message.', error: error.message });
+  }
+});
+
+// Route pour récupérer tous les messages de contact
+app.get('/api/contact', async (req, res) => {
+  try {
+    const messages = await db.collection('contact').find({}).toArray();
+    res.json(messages);
+  } catch (error) {
+    console.error('Erreur lors de la récupération des messages :', error);
+    res.status(500).json({ message: 'Erreur de récupération des messages', error: error.message });
+  }
+});
+
 // Serveur principal
 const PORT = 4000;
 app.listen(PORT, () => {

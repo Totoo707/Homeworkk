@@ -1,5 +1,5 @@
 // app/layout.js
-import '../globals.css';
+import '../../globals.css';
 import Link from 'next/link';
 
 export const metadata = {
@@ -33,9 +33,9 @@ export default function RootLayout({ children }) {
               <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
               <Link href="/">
                 <h1 className="text-4xl md:text-5xl font-extrabold tracking-wider text-white cursor-pointer">
-                    Next.js App
+                  Next.js App
                 </h1>
-            </Link>
+              </Link>
                 <nav className="mt-4 md:mt-0">
                   <ul className="flex space-x-8">
                     <li>

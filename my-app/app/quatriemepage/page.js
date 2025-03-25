@@ -17,7 +17,6 @@ export default function Page() {
     }
 
     try {
-      // Exemple d'envoi des données à une API (remplacez l'URL par votre endpoint)
       const response = await fetch("http://localhost:4000/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -39,24 +38,31 @@ export default function Page() {
   };
 
   return (
-    <main>
-      {/* Contact Us Section */}
-      <section className="bg-gradient-to-r from-yellow-500 to-pink-500 text-white p-10 rounded-3xl shadow-2xl mt-16 w-full max-w-5xl animate-fadeInUp">
-        <h3 className="text-3xl font-semibold mb-6">Contactez-nous</h3>
+    <main >
+      <section className="bg-gradient-to-r from-teal-600 to-blue-800 text-white p-12 rounded-3xl shadow-2xl w-full max-w-4xl transform transition duration-500 hover:scale-105">
+        <h3 className="text-4xl font-extrabold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-blue-400">
+          Contactez-nous
+        </h3>
 
         {responseMessage && (
           <div
             className={`${
-              responseMessage.includes("succès") ? "bg-green-500" : "bg-red-500"
-            } text-white text-lg font-semibold rounded-lg p-4 mb-6`}
+              responseMessage.includes("succès")
+                ? "bg-green-200 text-green-800"
+                : "bg-red-200 text-red-800"
+            } text-lg font-semibold rounded-lg p-4 mb-6 shadow-md transition-all duration-300 ease-in-out`}
           >
             {responseMessage}
           </div>
         )}
 
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="name" className="block text-lg font-medium">
+        <form className="space-y-8" onSubmit={handleSubmit}>
+          {/* Nom */}
+          <div className="flex flex-col">
+            <label
+              htmlFor="name"
+              className="text-lg font-medium text-gray-200 mb-2"
+            >
               Nom
             </label>
             <input
@@ -64,12 +70,17 @@ export default function Page() {
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full p-3 rounded-lg text-black"
+              className="p-4 rounded-lg text-gray-900 border border-gray-300 focus:outline-none focus:ring-4 focus:ring-teal-300 transition duration-300 ease-in-out shadow-sm"
               placeholder="Votre nom"
             />
           </div>
-          <div>
-            <label htmlFor="email" className="block text-lg font-medium">
+
+          {/* Email */}
+          <div className="flex flex-col">
+            <label
+              htmlFor="email"
+              className="text-lg font-medium text-gray-200 mb-2"
+            >
               Email
             </label>
             <input
@@ -77,26 +88,33 @@ export default function Page() {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3 rounded-lg text-black"
+              className="p-4 rounded-lg text-gray-900 border border-gray-300 focus:outline-none focus:ring-4 focus:ring-teal-300 transition duration-300 ease-in-out shadow-sm"
               placeholder="Votre email"
             />
           </div>
-          <div>
-            <label htmlFor="message" className="block text-lg font-medium">
+
+          {/* Message */}
+          <div className="flex flex-col">
+            <label
+              htmlFor="message"
+              className="text-lg font-medium text-gray-200 mb-2"
+            >
               Message
             </label>
             <textarea
               id="message"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              className="w-full p-3 rounded-lg text-black"
+              className="p-4 rounded-lg text-gray-900 border border-gray-300 focus:outline-none focus:ring-4 focus:ring-teal-300 transition duration-300 ease-in-out shadow-sm"
               placeholder="Votre message"
-              rows="4"
+              rows="6"
             ></textarea>
           </div>
+
+          {/* Submit Button */}
           <button
             type="submit"
-            className="px-10 py-4 bg-gradient-to-r from-yellow-500 to-pink-500 text-white rounded-full shadow-lg hover:scale-105 transition-transform duration-300"
+            className="w-full py-4 bg-gradient-to-r from-teal-500 to-blue-600 text-white font-bold rounded-lg shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-teal-300"
           >
             Envoyer le message
           </button>
