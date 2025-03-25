@@ -11,14 +11,15 @@ export default function Page() {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await fetch("/api/articles");
+        // Appel au serveur Express
+        const response = await fetch("http://localhost:4000/api/articles");
         if (!response.ok) {
           throw new Error("Erreur lors de la récupération des articles");
         }
         const data = await response.json();
         setArticles(data);
       } catch (error) {
-        console.error("Erreur lors de la récupération des articles:", error);
+        console.error("Erreur lors de la récupération des articles :", error);
       } finally {
         setLoading(false);
       }
@@ -43,7 +44,7 @@ export default function Page() {
                 <li
                   key={article._id}
                   className="bg-white p-6 rounded-3xl shadow-xl hover:scale-105 transition-transform duration-300 cursor-pointer"
-                  onClick={() => router.push(`/deuxiemepage/${article._id}`)} // Redirige vers la bonne URL sans "/page"
+                  onClick={() => router.push(`/deuxiemepage/${article._id}`)} // Redirige vers la page de détails
                 >
                   <h5 className="text-2xl font-semibold text-gray-800">
                     {article.titre}

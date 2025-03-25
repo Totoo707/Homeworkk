@@ -1,25 +1,26 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation"; // Utilisation de useParams() pour récupérer l'ID
+import { useParams } from "next/navigation";
 
 export default function ArticlePage() {
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { id } = useParams(); // Utilise useParams() pour récupérer l'ID de l'article
+  const { id } = useParams();
 
   useEffect(() => {
     if (id) {
       const fetchArticle = async () => {
         try {
-          const response = await fetch(`/api/articles/${id}`);
+          // Appel au serveur Express
+          const response = await fetch(`http://localhost:4000/api/articles/${id}`);
           if (!response.ok) {
             throw new Error("Erreur lors de la récupération de l'article");
           }
           const data = await response.json();
           setArticle(data);
         } catch (error) {
-          console.error("Erreur lors de la récupération de l'article:", error);
+          console.error("Erreur lors de la récupération de l'article :", error);
         } finally {
           setLoading(false);
         }
@@ -47,7 +48,6 @@ export default function ArticlePage() {
 
   return (
     <div className="w-full max-w-5xl mx-auto p-8 bg-gradient-to-r from-blue-100 via-indigo-200 to-pink-300 rounded-lg shadow-2xl mt-12">
-      {/* Bouton retour avec un style plus interactif */}
       <div className="mb-6">
         <button
           onClick={() => window.history.back()}
@@ -57,34 +57,36 @@ export default function ArticlePage() {
         </button>
       </div>
 
-      {/* Titre */}
-      <h2 className="text-5xl font-extrabold text-gray-800 mb-6 text-center tracking-wide transition-transform duration-300 hover:text-teal-500 transform hover:scale-105">
-        {article.titre}
-      </h2>
-
-      {/* Auteur */}
-      <p className="text-2xl text-gray-700 mb-4 text-center">
-        Par <span className="font-semibold">{article.auteur}</span>
-      </p>
-
-      {/* Image avec effet de zoom au survol */}
+      {/* Image */}
       <img
         src={article.image}
         alt={article.titre}
         className="w-full h-96 object-cover rounded-xl mb-6 hover:scale-105 transition-transform duration-500 ease-in-out shadow-xl"
       />
 
-      {/* Contenu avec meilleure mise en forme */}
-      <div className="text-lg text-gray-800 space-y-8 leading-relaxed">
-        {article.contenu.map((paragraph, index) => (
-          <p key={index} className="transition-opacity duration-300 hover:opacity-80">{paragraph}</p>
-        ))}
-      </div>
+      <div className="text-left">
+        {/* Titre de l'article */}
+        <h2 className="text-5xl font-extrabold text-gray-800 mb-4 tracking-wide transition-transform duration-300 hover:text-teal-500 transform hover:scale-105">
+          {article.titre}
+        </h2>
 
-      {/* Footer avec des informations supplémentaires */}
-      <div className="mt-12 text-center text-gray-500 text-sm">
-        <p>Publié le : {new Date(article.date).toLocaleDateString()}</p>
-        <p className="mt-4 text-gray-400">Merci de lire cet article !</p>
+        {/* Auteur et date */}
+        <div className="text-xl text-gray-700 mb-4">
+          <p>
+            Par <span className="font-semibold">{article.auteur}</span> -{" "}
+            <span className="italic">{new Date(article.date).toLocaleDateString()}</span>
+          </p>
+        </div>
+
+        {/* Contenu de l'article */}
+        <div className="text-lg text-gray-800 space-y-8 leading-relaxed">
+          <p>{article.contenu}</p>
+        </div>
+
+        {/* Footer avec remerciements */}
+        <div className="mt-12 text-gray-500 text-sm">
+          <p className="mt-4 text-gray-400">Merci de lire cet article !</p>
+        </div>
       </div>
     </div>
   );

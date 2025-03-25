@@ -117,11 +117,6 @@ export default function Page() {
                 alt="Sample"
                 className="mx-auto mb-6 w-48 h-48 object-cover rounded-full shadow-2xl hover:scale-110 transition-transform duration-500"
               />
-              <Link href="/blog">
-                <button className="px-10 py-4 bg-gradient-to-r from-yellow-500 to-teal-500 text-white rounded-full shadow-lg hover:scale-105 transition-transform duration-300">
-                  Visit Blog
-                </button>
-              </Link>
             </section>
           )}
 
