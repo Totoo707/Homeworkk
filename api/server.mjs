@@ -76,3 +76,28 @@ const PORT = 4000;
 app.listen(PORT, () => {
   console.log(`Serveur en fonctionnement sur http://localhost:${PORT}`);
 });
+
+// Route pour ajouter un nouvel article
+app.post('/api/articles', express.json(), async (req, res) => {
+  const { titre, auteur, contenu, image } = req.body;
+
+  // Validation des données
+  if (!titre || !auteur || !contenu || !image) {
+    return res.status(400).json({ message: 'Tous les champs sont obligatoires.' });
+  }
+
+  try {
+    const result = await db.collection('articles').insertOne({
+      titre,
+      auteur,
+      contenu,
+      image,
+      date: new Date(), // Ajoute une date de création
+    });
+
+    res.status(201).json({ message: 'Article ajouté avec succès.', articleId: result.insertedId });
+  } catch (error) {
+    console.error('Erreur lors de l\'ajout de l\'article :', error);
+    res.status(500).json({ message: 'Erreur lors de l\'ajout de l\'article.', error: error.message });
+  }
+});

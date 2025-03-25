@@ -43,9 +43,11 @@ export default function Page() {
         {/* HEADER */}
         <header className="bg-black/50 backdrop-blur-md py-6 px-8">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
-            <h1 className="text-4xl md:text-5xl font-extrabold tracking-wider text-white">
-              Next.js App
-            </h1>
+          <Link href="/">
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-wider text-white cursor-pointer">
+            Next.js App
+          </h1>
+          </Link>
             <nav className="mt-4 md:mt-0">
               <ul className="flex space-x-8">
                 <li>
@@ -70,6 +72,14 @@ export default function Page() {
                     className="text-lg text-white hover:text-yellow-400 transition-colors duration-300"
                   >
                     Ajout d'article
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/quatriemepage"
+                    className="text-lg text-white hover:text-yellow-400 transition-colors duration-300"
+                  >
+                    Contact
                   </Link>
                 </li>
               </ul>
@@ -123,7 +133,32 @@ export default function Page() {
             )}
           </section>
 
-          {/* AVIS SECTION */}
+          {/* FEATURES SECTION  */}
+          <section className="bg-gradient-to-r from-yellow-500 to-pink-500 text-white p-10 rounded-3xl shadow-2xl mt-16 w-full max-w-5xl animate-fadeInUp">
+            <h3 className="text-3xl font-semibold mb-6">Les Features</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="bg-white p-8 rounded-3xl shadow-lg hover:scale-105 transition-transform duration-300">
+                <h4 className="text-2xl font-semibold text-gray-800 mb-3">Feature 1</h4>
+                <p className="text-base text-gray-600">
+                  Voir les articles
+                </p>
+              </div>
+              <div className="bg-white p-8 rounded-3xl shadow-lg hover:scale-105 transition-transform duration-300">
+                <h4 className="text-2xl font-semibold text-gray-800 mb-3">Feature 2</h4>
+                <p className="text-base text-gray-600">
+                  Ajoutez des articles
+                </p>
+              </div>
+              <div className="bg-white p-8 rounded-3xl shadow-lg hover:scale-105 transition-transform duration-300">
+                <h4 className="text-2xl font-semibold text-gray-800 mb-3">Feature 3</h4>
+                <p className="text-base text-gray-600">
+                  Formulaire de contact
+                </p>
+              </div>
+            </div>
+          </section>
+
+             {/* AVIS SECTION */}
           <section className="bg-gradient-to-r from-yellow-500 to-pink-500 text-white p-10 rounded-3xl shadow-2xl mt-16 w-full max-w-5xl animate-fadeInUp">
             <h3 className="text-3xl font-semibold mb-6">What Users Are Saying</h3>
             <div className="space-y-6">
@@ -147,77 +182,7 @@ export default function Page() {
               </div>
             </div>
           </section>
-
-          {/* FEATURES SECTION  */}
-          <section className="bg-gradient-to-r from-yellow-500 to-pink-500 text-white p-10 rounded-3xl shadow-2xl mt-16 w-full max-w-5xl animate-fadeInUp">
-            <h3 className="text-3xl font-semibold mb-6">Key Features</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <div className="bg-white p-8 rounded-3xl shadow-lg hover:scale-105 transition-transform duration-300">
-                <h4 className="text-2xl font-semibold text-gray-800 mb-3">Feature 1</h4>
-                <p className="text-base text-gray-600">
-                  Cutting-edge functionality that sets your app apart.
-                </p>
-              </div>
-              <div className="bg-white p-8 rounded-3xl shadow-lg hover:scale-105 transition-transform duration-300">
-                <h4 className="text-2xl font-semibold text-gray-800 mb-3">Feature 2</h4>
-                <p className="text-base text-gray-600">
-                  Optimized performance, stunning visuals, and unmatched speed.
-                </p>
-              </div>
-              <div className="bg-white p-8 rounded-3xl shadow-lg hover:scale-105 transition-transform duration-300">
-                <h4 className="text-2xl font-semibold text-gray-800 mb-3">Feature 3</h4>
-                <p className="text-base text-gray-600">
-                  Responsive design that works beautifully on any device.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          {/* Contact Us Section */}
-          <section className="bg-gradient-to-r from-yellow-500 to-pink-500 text-white p-10 rounded-3xl shadow-2xl mt-16 w-full max-w-5xl animate-fadeInUp">
-            <h3 className="text-3xl font-semibold mb-6">Contact Us</h3>
-            <form className="space-y-6">
-              <div>
-                <label htmlFor="name" className="block text-lg font-medium">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  className="w-full p-3 rounded-lg text-black"
-                  placeholder="Your Name"
-                />
-              </div>
-              <div>
-                <label htmlFor="email" className="block text-lg font-medium">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  className="w-full p-3 rounded-lg text-black"
-                  placeholder="Your Email"
-                />
-              </div>
-              <div>
-                <label htmlFor="message" className="block text-lg font-medium">
-                  Message
-                </label>
-                <textarea
-                  id="message"
-                  className="w-full p-3 rounded-lg text-black"
-                  placeholder="Your Message"
-                  rows="4"
-                ></textarea>
-              </div>
-              <button
-                type="submit"
-                className="px-10 py-4 bg-gradient-to-r from-yellow-500 to-pink-500 text-white rounded-full shadow-lg hover:scale-105 transition-transform duration-300"
-              >
-                Send Message
-              </button>
-            </form>
-          </section>
+         
         </main>
 
         {/* FOOTER */}
