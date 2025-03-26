@@ -86,14 +86,6 @@ export default function RootLayout({ children }) {
                       </Link>
                     </li>
                     <li>
-                      <Link
-                        href="/troisiemepage"
-                        className="text-lg text-white hover:text-yellow-400 transition-colors duration-300"
-                      >
-                        Ajout d'article
-                      </Link>
-                    </li>
-                    <li>
                       {/* Lien pour ouvrir la popup */}
                       <button
                         onClick={() => setIsModalOpen(true)}
@@ -101,6 +93,17 @@ export default function RootLayout({ children }) {
                       >
                         Contact
                       </button>
+                    </li>
+                    <li className="text-lg text-white hover:text-yellow-400 transition-colors duration-300">                                          
+                      ││
+                    </li>
+                    <li>
+                      <Link
+                        href="/troisiemepage"
+                        className="text-lg text-white hover:text-yellow-400 transition-colors duration-300"
+                      >
+                        Ajout d'article
+                      </Link>
                     </li>
                     <li>
                       <Link
