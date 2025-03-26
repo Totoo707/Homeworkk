@@ -47,7 +47,7 @@ export function AuthProvider({ children }) {
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
-    router.push("/connexion"); // Rediriger vers la page de connexion
+    router.push("/"); // Rediriger vers la page d'accueil
   };
 
   return (

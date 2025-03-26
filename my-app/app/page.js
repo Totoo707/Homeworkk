@@ -26,7 +26,7 @@ export default function Page() {
     };
 
     fetchCards();
-  }, []);
+  }, []); 
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gray-900 text-white font-sans">

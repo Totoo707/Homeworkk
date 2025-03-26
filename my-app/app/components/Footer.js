@@ -8,7 +8,7 @@ export default function Footer() {
           © 2025 Next.js App. Tous droits réservés.
         </p>
         <p className="text-sm md:text-base mt-2">
-          AAAA
+          AAA
         </p>
       </div>
     </footer>
