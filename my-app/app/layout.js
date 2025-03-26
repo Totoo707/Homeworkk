@@ -17,7 +17,7 @@ export default function RootLayout({ children }) {
         <body>
           <Header />
           {/* Utilisation de classes responsives pour ajuster la marge */}
-          <div className="pt-32 md:pt-24">{children}</div> {/* pt-32 sur mobile, pt-24 sur écrans moyens et plus */}
+          <div className="">{children}</div> 
           <Footer />
         </body>
       </html>

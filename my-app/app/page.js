@@ -31,7 +31,7 @@ export default function Page() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-gray-900 text-white font-sans">
       {/* Fond animé */}
-      <div
+      <div 
         className="absolute inset-0 z-0 opacity-20 bg-cover "
         style={{
           backgroundImage:

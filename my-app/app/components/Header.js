@@ -7,7 +7,7 @@ export default function Header() {
   const { user, logout } = useAuth(); // Utilisation du contexte d'authentification
 
   return (
-    <header className="bg-black backdrop-blur-md py-6 px-8 fixed top-0 left-0 w-full z-50">
+    <header className="bg-black backdrop-blur-md py-6 px-8 top-0 left-0 w-full z-50">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
         <Link href="/">
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-wider text-white cursor-pointer">

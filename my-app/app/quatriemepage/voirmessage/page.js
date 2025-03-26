@@ -66,7 +66,7 @@ export default function VoirMessage() {
           {messages.map((msg) => (
             <div
               key={msg._id}
-              className="p-6 bg-gray-800 rounded-lg shadow-lg space-y-2"
+              className="p-6 bg-gray-800 rounded-lg shadow-lg space-y-2 transition-transform transform hover:scale-105 hover:bg-gray-700 hover:shadow-2xl"
             >
               <h2 className="text-2xl font-semibold">{msg.nom}</h2>
               <p className="text-sm text-gray-400">{msg.email}</p>
