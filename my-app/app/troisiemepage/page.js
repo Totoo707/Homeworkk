@@ -76,22 +76,24 @@ export default function Page() {
     }
   };
 
-  // Si l'utilisateur n'est pas connecté, afficher le formulaire de connexion
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-        <div className="w-full max-w-md p-8 bg-gray-800 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold mb-6 text-center">Connexion</h2>
-
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white p-6">
+        <div className="w-full max-w-2xl p-12 bg-gray-800 rounded-2xl shadow-2xl border border-gray-700 transform transition duration-500 hover:scale-105">
+          <h2 className="text-4xl font-bold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">
+            Connexion
+          </h2>
+  
           {message && (
-            <div className="bg-red-500 text-white text-lg font-semibold rounded-lg p-4 mb-6">
+            <div className="bg-red-500 text-white text-lg font-semibold rounded-lg p-4 mb-6 shadow-md">
               {message}
             </div>
           )}
-
-          <form onSubmit={handleLogin} className="space-y-6">
-            <div>
-              <label htmlFor="email" className="block text-lg font-medium">
+  
+          <form onSubmit={handleLogin} className="space-y-8">
+            {/* Email */}
+            <div className="flex flex-col">
+              <label htmlFor="email" className="text-lg font-medium text-gray-300 mb-2">
                 Email
               </label>
               <input
@@ -99,12 +101,14 @@ export default function Page() {
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full p-3 rounded-lg text-black"
+                className="p-4 rounded-lg text-gray-900 border border-gray-600 focus:outline-none focus:ring-4 focus:ring-purple-300 transition duration-300 ease-in-out"
                 placeholder="Votre email"
               />
             </div>
-            <div>
-              <label htmlFor="motDePasse" className="block text-lg font-medium">
+  
+            {/* Mot de passe */}
+            <div className="flex flex-col">
+              <label htmlFor="motDePasse" className="text-lg font-medium text-gray-300 mb-2">
                 Mot de passe
               </label>
               <input
@@ -112,13 +116,15 @@ export default function Page() {
                 id="motDePasse"
                 value={motDePasse}
                 onChange={(e) => setMotDePasse(e.target.value)}
-                className="w-full p-3 rounded-lg text-black"
+                className="p-4 rounded-lg text-gray-900 border border-gray-600 focus:outline-none focus:ring-4 focus:ring-purple-300 transition duration-300 ease-in-out"
                 placeholder="Votre mot de passe"
               />
             </div>
+  
+            {/* Bouton de connexion */}
             <button
               type="submit"
-              className="w-full py-3 bg-gradient-to-r from-yellow-500 to-pink-500 text-white rounded-lg shadow-lg hover:scale-105 transition-transform"
+              className="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-lg shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-purple-300"
             >
               Se connecter
             </button>
