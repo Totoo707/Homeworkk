@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import cors from 'cors';
 import { MongoClient, ObjectId } from 'mongodb';
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 import bcrypt from 'bcrypt'; // Pour comparer les mots de passe
 import jwt from 'jsonwebtoken'; // Pour générer des tokens JWT
 
@@ -15,9 +15,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Autoriser uniquement les requêtes provenant de localhost:3000
-app.use(cors({
-  origin: 'http://localhost:3000' // Frontend
-}));
+app.use(
+  cors({
+    origin: 'http://localhost:3000', // Frontend
+  })
+);
 
 // Configuration MongoDB
 const DATABASE_NAME = 'maBaseDeDonnées'; // Remplacez par le nom de votre base de données
@@ -25,18 +27,22 @@ let db;
 
 // Connexion à MongoDB
 console.log('connexion', process.env.MONGODB_URI);
-MongoClient.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(client => {
+MongoClient.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+  .then((client) => {
     db = client.db(DATABASE_NAME);
     console.log(`Connecté à la base de données : ${DATABASE_NAME}`);
   })
-  .catch(error => {
+  .catch((error) => {
     console.error('Erreur de connexion à MongoDB :', error);
   });
 
 // Middleware pour parser le JSON
 app.use(express.json());
 
+// TODO pour une meilleur comprehension il faut que tu separe tes routes dans des fichiers differents par exemple articles, contacts, users
 // Route pour la racine
 app.get('/', (req, res) => {
   res.send('Bienvenue sur le serveur API !');
@@ -49,7 +55,10 @@ app.get('/api/articles', async (req, res) => {
     res.json(articles);
   } catch (error) {
     console.error('Erreur lors de la récupération des articles :', error);
-    res.status(500).json({ message: 'Erreur de récupération des articles', error: error.message });
+    res.status(500).json({
+      message: 'Erreur de récupération des articles',
+      error: error.message,
+    });
   }
 });
 
@@ -60,14 +69,19 @@ app.get('/api/articles/:id', async (req, res) => {
     if (!ObjectId.isValid(id)) {
       return res.status(400).json({ message: 'ID invalide' });
     }
-    const article = await db.collection('articles').findOne({ _id: new ObjectId(id) });
+    const article = await db
+      .collection('articles')
+      .findOne({ _id: new ObjectId(id) });
     if (!article) {
       return res.status(404).json({ message: 'Article introuvable' });
     }
     res.json(article);
   } catch (error) {
-    console.error('Erreur lors de la récupération de l\'article :', error);
-    res.status(500).json({ message: 'Erreur de récupération de l\'article', error: error.message });
+    console.error("Erreur lors de la récupération de l'article :", error);
+    res.status(500).json({
+      message: "Erreur de récupération de l'article",
+      error: error.message,
+    });
   }
 });
 
@@ -77,7 +91,9 @@ app.post('/api/articles', async (req, res) => {
 
   // Validation des données
   if (!titre || !auteur || !contenu || !image) {
-    return res.status(400).json({ message: 'Tous les champs sont obligatoires.' });
+    return res
+      .status(400)
+      .json({ message: 'Tous les champs sont obligatoires.' });
   }
 
   try {
@@ -89,20 +105,28 @@ app.post('/api/articles', async (req, res) => {
       date: new Date(), // Ajoute une date de création
     });
 
-    res.status(201).json({ message: 'Article ajouté avec succès.', articleId: result.insertedId });
+    res.status(201).json({
+      message: 'Article ajouté avec succès.',
+      articleId: result.insertedId,
+    });
   } catch (error) {
-    console.error('Erreur lors de l\'ajout de l\'article :', error);
-    res.status(500).json({ message: 'Erreur lors de l\'ajout de l\'article.', error: error.message });
+    console.error("Erreur lors de l'ajout de l'article :", error);
+    res.status(500).json({
+      message: "Erreur lors de l'ajout de l'article.",
+      error: error.message,
+    });
   }
 });
 
 // Route pour gérer la connexion des utilisateurs
-const SECRET_KEY = "votre_clé_secrète"; // Remplacez par une clé secrète sécurisée
+const SECRET_KEY = 'votre_clé_secrète'; // Remplacez par une clé secrète sécurisée
 app.post('/api/login', async (req, res) => {
   const { email, motDePasse } = req.body;
 
   if (!email || !motDePasse) {
-    return res.status(400).json({ message: 'Email et mot de passe sont obligatoires.' });
+    return res
+      .status(400)
+      .json({ message: 'Email et mot de passe sont obligatoires.' });
   }
 
   try {
@@ -113,21 +137,30 @@ app.post('/api/login', async (req, res) => {
     }
 
     // Vérifier le mot de passe
-    const motDePasseValide = await bcrypt.compare(motDePasse, utilisateur.motDePasse);
+    const motDePasseValide = await bcrypt.compare(
+      motDePasse,
+      utilisateur.motDePasse
+    );
 
     if (!motDePasseValide) {
       return res.status(401).json({ message: 'Mot de passe incorrect.' });
     }
 
     // Générer un token JWT
-    const token = jwt.sign({ id: utilisateur._id, email: utilisateur.email }, SECRET_KEY, {
-      expiresIn: '1h', // Le token expire dans 1 heure
-    });
+    const token = jwt.sign(
+      { id: utilisateur._id, email: utilisateur.email },
+      SECRET_KEY,
+      {
+        expiresIn: '1h', // Le token expire dans 1 heure
+      }
+    );
 
     res.status(200).json({ message: 'Connexion réussie.', token });
   } catch (error) {
     console.error('Erreur lors de la connexion :', error);
-    res.status(500).json({ message: 'Erreur lors de la connexion.', error: error.message });
+    res
+      .status(500)
+      .json({ message: 'Erreur lors de la connexion.', error: error.message });
   }
 });
 
@@ -136,7 +169,9 @@ app.post('/api/contact', async (req, res) => {
 
   // Validation des données
   if (!name || !email || !message) {
-    return res.status(400).json({ message: 'Tous les champs sont obligatoires.' });
+    return res
+      .status(400)
+      .json({ message: 'Tous les champs sont obligatoires.' });
   }
 
   try {
@@ -147,10 +182,16 @@ app.post('/api/contact', async (req, res) => {
       date: new Date(), // Ajoute une date de création
     });
 
-    res.status(201).json({ message: 'Message envoyé avec succès.', contactId: result.insertedId });
+    res.status(201).json({
+      message: 'Message envoyé avec succès.',
+      contactId: result.insertedId,
+    });
   } catch (error) {
-    console.error('Erreur lors de l\'envoi du message :', error);
-    res.status(500).json({ message: 'Erreur lors de l\'envoi du message.', error: error.message });
+    console.error("Erreur lors de l'envoi du message :", error);
+    res.status(500).json({
+      message: "Erreur lors de l'envoi du message.",
+      error: error.message,
+    });
   }
 });
 
@@ -161,7 +202,10 @@ app.get('/api/contact', async (req, res) => {
     res.json(messages);
   } catch (error) {
     console.error('Erreur lors de la récupération des messages :', error);
-    res.status(500).json({ message: 'Erreur de récupération des messages', error: error.message });
+    res.status(500).json({
+      message: 'Erreur de récupération des messages',
+      error: error.message,
+    });
   }
 });
 
