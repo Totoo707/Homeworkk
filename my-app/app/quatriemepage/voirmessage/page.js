@@ -50,8 +50,8 @@ export default function VoirMessage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
-      <h1 className="text-4xl font-bold mb-8">Messages reçus</h1>
+    <div className="min-h-screen bg-gray-900 text-white p-6">
+      <h1 className="text-3xl font-bold mb-6 text-center">Messages reçus</h1>
 
       {message && (
         <div className="bg-red-500 text-white text-lg font-semibold rounded-lg p-4 mb-6">
@@ -60,18 +60,22 @@ export default function VoirMessage() {
       )}
 
       {messages.length === 0 ? (
-        <p className="text-lg">Aucun message pour le moment.</p>
+        <p className="text-lg text-center">Aucun message pour le moment.</p>
       ) : (
-        <div className="space-y-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {messages.map((msg) => (
             <div
               key={msg._id}
-              className="p-6 bg-gray-800 rounded-lg shadow-lg space-y-2 transition-transform transform hover:scale-105 hover:bg-gray-700 hover:shadow-2xl"
+              className="p-4 bg-gray-800 rounded-lg shadow-md space-y-2 transition-transform transform hover:scale-105 hover:bg-gray-700 hover:shadow-lg"
             >
-              <h2 className="text-2xl font-semibold">{msg.nom}</h2>
-              <p className="text-sm text-gray-400">{msg.email}</p>
-              <p className="text-lg">{msg.message}</p>
-              <p className="text-sm text-gray-500">
+              <h2 className="text-xl font-semibold text-yellow-400 truncate">
+                {msg.nom}
+              </h2>
+              <p className="text-sm text-gray-400 truncate">{msg.email}</p>
+              <p className="text-sm text-gray-300 line-clamp-3">
+                {msg.message}
+              </p>
+              <p className="text-xs text-gray-500">
                 Reçu le : {new Date(msg.date).toLocaleString()}
               </p>
             </div>

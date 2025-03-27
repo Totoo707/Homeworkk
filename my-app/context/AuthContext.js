@@ -57,7 +57,7 @@ export function AuthProvider({ children }) {
   );
 }
 
-// Hook personnalisé pour utiliser le contexte d'authentification
+// Hook personnalisé pour utiliser le contexte d'authentification 
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
