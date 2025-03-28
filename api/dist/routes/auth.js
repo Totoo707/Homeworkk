@@ -1,14 +1,16 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-const createRouter = (db) => {
-    const router = express.Router(); // Assurez-vous que le routeur est correctement initialisé
-    const SECRET_KEY = 'votre_clé_secrète'; // Remplacez par une clé secrète sécurisée
+const router = express.Router();
+const SECRET_KEY = 'votre_clé_secrète'; // Remplacez par une clé secrète sécurisée
+export default (db) => {
     // Route pour gérer la connexion des utilisateurs
     router.post('/login', async (req, res) => {
         const { email, motDePasse } = req.body;
         if (!email || !motDePasse) {
-            return res.status(400).json({ message: 'Email et mot de passe sont obligatoires.' });
+            return res
+                .status(400)
+                .json({ message: 'Email et mot de passe sont obligatoires.' });
         }
         try {
             const utilisateur = await db.collection('utilisateurs').findOne({ email });
@@ -21,8 +23,10 @@ const createRouter = (db) => {
                 return res.status(401).json({ message: 'Mot de passe incorrect.' });
             }
             // Générer un token JWT
-            const token = jwt.sign({ id: utilisateur._id, email: utilisateur.email }, SECRET_KEY, { expiresIn: '1h' });
-            res.status(200).json({ message: 'Connexion réussie.', token });
+            const token = jwt.sign({ id: utilisateur._id, email: utilisateur.email }, SECRET_KEY, {
+                expiresIn: '1h',
+            });
+            res.status(200).json({ user: utilisateur });
         }
         catch (error) {
             console.error('Erreur lors de la connexion :', error);
@@ -32,6 +36,5 @@ const createRouter = (db) => {
             });
         }
     });
-    return router; // Retournez le routeur configuré
+    return router;
 };
-export default createRouter;

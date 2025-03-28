@@ -29,6 +29,7 @@ export default function VoirMessage() {
 
       if (response.ok) {
         const data = await response.json();
+        console.log("Données récupérées :", data); // Débogage pour vérifier les données récupérées
         setMessages(data);
       } else {
         const errorData = await response.json();
@@ -68,8 +69,9 @@ export default function VoirMessage() {
               key={msg._id}
               className="p-4 bg-gray-800 rounded-lg shadow-md space-y-2 transition-transform transform hover:scale-105 hover:bg-gray-700 hover:shadow-lg"
             >
+              {/* Affichage du nom, en utilisant msg.nom ou msg.name selon les données */}
               <h2 className="text-xl font-semibold text-yellow-400 truncate">
-                {msg.nom}
+                {msg.nom || msg.name || "Nom non disponible"} {/* Affichage conditionnel */}
               </h2>
               <p className="text-sm text-gray-400 truncate">{msg.email}</p>
               <p className="text-sm text-gray-300 line-clamp-3">

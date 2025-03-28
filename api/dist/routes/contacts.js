@@ -1,15 +1,18 @@
 import express from 'express';
-const createRouter = (db) => {
-    const router = express.Router();
+const router = express.Router();
+export default (db) => {
     // Route pour envoyer un message de contact
     router.post('/', async (req, res) => {
-        const { nom, email, message } = req.body;
-        if (!nom || !email || !message) {
-            return res.status(400).json({ message: 'Tous les champs sont obligatoires.' });
+        const { name, email, message } = req.body;
+        console.log('Données reçues :', req.body); // Log pour déboguer les données reçues
+        if (!name || !email || !message) {
+            return res
+                .status(400)
+                .json({ message: 'Tous les champs sont obligatoires.' });
         }
         try {
             const result = await db.collection('contact').insertOne({
-                nom,
+                name,
                 email,
                 message,
                 date: new Date(),
@@ -43,4 +46,3 @@ const createRouter = (db) => {
     });
     return router;
 };
-export default createRouter;

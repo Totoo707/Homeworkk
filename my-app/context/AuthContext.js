@@ -27,8 +27,9 @@ export const AuthProvider = ({ children }) => {
       if (!response.ok) {
         throw new Error("Échec de la connexion. Vérifie tes informations.");
       }
-
+      
       const data = await response.json();
+      console.log("Utilisateur connecté :", data);
       setUser(data.user);
       setError(null); // Réinitialise les erreurs
     } catch (error) {

@@ -1,48 +1,56 @@
-import express, { Request, Response } from "express";
-import { Db } from "mongodb";
-import bcrypt from "bcryptjs";
+import express from 'express';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
-const createAuthRouter = (db: Db) => {
-  const router = express.Router();
+const router = express.Router();
+const SECRET_KEY = 'votre_clé_secrète'; // Remplacez par une clé secrète sécurisée
 
-  // Route POST pour la connexion
-  router.post("/login", async (req: Request, res: Response) => {
-    const { email, motDePasse } = req.body;  // Assure-toi que ces données sont envoyées dans la requête
+export default (db:any) => {
+  // Route pour gérer la connexion des utilisateurs
+  router.post('/login', async (req, res) => {
+    const { email, motDePasse } = req.body;
 
     if (!email || !motDePasse) {
-      return res.status(400).json({ message: "Email et mot de passe sont requis." });
+      return res
+        .status(400)
+        .json({ message: 'Email et mot de passe sont obligatoires.' });
     }
 
     try {
-      // Vérification si l'utilisateur existe dans la base de données
-      const user = await db.collection("utilisateurs").findOne({ email });
+      const utilisateur = await db.collection('utilisateurs').findOne({ email });
 
-      if (!user) {
-        return res.status(400).json({ message: "Utilisateur non trouvé." });
+      if (!utilisateur) {
+        return res.status(404).json({ message: 'Utilisateur non trouvé.' });
       }
 
-      // Vérification du mot de passe avec bcrypt
-      const isMatch = await bcrypt.compare(motDePasse, user.motDePasse);
+      // Vérifier le mot de passe
+      const motDePasseValide = await bcrypt.compare(
+        motDePasse,
+        utilisateur.motDePasse
+      );
 
-      if (!isMatch) {
-        return res.status(400).json({ message: "Mot de passe incorrect." });
+      if (!motDePasseValide) {
+        return res.status(401).json({ message: 'Mot de passe incorrect.' });
       }
 
-      // Connexion réussie, envoie les informations de l'utilisateur
-      res.json({ user: { _id: user._id, email: user.email, nom: user.nom } });
-    } catch (error: unknown) {
-      // Si l'erreur est une instance d'Error, on l'affiche correctement
-      if (error instanceof Error) {
-        console.error("Erreur lors de la connexion :", error.message);
-        return res.status(500).json({ message: "Erreur serveur.", error: error.message });
-      } else {
-        console.error("Erreur inconnue :", error);
-        return res.status(500).json({ message: "Une erreur inconnue est survenue." });
-      }
+      // Générer un token JWT
+      const token = jwt.sign(
+        { id: utilisateur._id, email: utilisateur.email },
+        SECRET_KEY,
+        {
+          expiresIn: '1h',
+        }
+      );
+
+      res.status(200).json({ user: utilisateur  });
+    } catch (error:any) {
+      console.error('Erreur lors de la connexion :', error);
+      res.status(500).json({
+        message: 'Erreur lors de la connexion.',
+        error: error.message,
+      });
     }
   });
 
   return router;
 };
-
-export default createAuthRouter;

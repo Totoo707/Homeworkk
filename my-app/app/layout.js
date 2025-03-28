@@ -7,7 +7,7 @@ import "../app/globals.css"; // Import des styles globaux
 
 export default function RootLayout({ children }) {
   return (
-    <AuthProvider>
+    
       <html lang="fr">
         <head>
           <meta charSet="UTF-8" />
@@ -15,12 +15,13 @@ export default function RootLayout({ children }) {
           <title>Next.js App</title>
         </head>
         <body>
+        <AuthProvider>
           <Header />
           {/* Utilisation de classes responsives pour ajuster la marge */}
           <div className="">{children}</div> 
           <Footer />
+          </AuthProvider>
         </body>
       </html>
-    </AuthProvider>
   );
 }
