@@ -1,21 +1,22 @@
-"use client";
+"use client"; // Assure-toi que ce fichier utilise React en mode client
 
 import { useState } from "react";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext"; // Assure-toi d'importer correctement le contexte
 
 export default function ConnexionPage() {
-  const { login } = useAuth();
+  const { login, error, loading } = useAuth(); // Le hook d'authentification
   const [email, setEmail] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
   const [message, setMessage] = useState("");
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Empêche la soumission du formulaire par défaut
 
+    setMessage(""); // Réinitialiser le message d'erreur ou de succès avant chaque tentative
     try {
-      await login(email, motDePasse);
+      await login(email, motDePasse); // Appelle la fonction de login dans le contexte
     } catch (error) {
-      setMessage(error.message);
+      setMessage(error.message); // Affiche l'erreur si la connexion échoue
     }
   };
 
@@ -25,6 +26,13 @@ export default function ConnexionPage() {
         <h2 className="text-4xl font-bold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">
           Connexion
         </h2>
+
+        {/* Affichage des messages d'erreur ou de succès */}
+        {error && (
+          <div className="bg-red-500 text-white text-lg font-semibold rounded-lg p-4 mb-6 shadow-md">
+            {error}
+          </div>
+        )}
 
         {message && (
           <div className="bg-red-500 text-white text-lg font-semibold rounded-lg p-4 mb-6 shadow-md">
@@ -64,8 +72,9 @@ export default function ConnexionPage() {
           <button
             type="submit"
             className="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-lg shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-purple-300"
+            disabled={loading} // Désactive le bouton pendant le chargement
           >
-            Se connecter
+            {loading ? "Chargement..." : "Se connecter"}
           </button>
         </form>
       </div>

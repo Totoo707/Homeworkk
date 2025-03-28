@@ -1,8 +1,9 @@
+
 import express from 'express';
 
 const router = express.Router();
 
-export default (db) => {
+export default (db:any) => {
   // Route pour envoyer un message de contact
   router.post('/', async (req, res) => {
     const { name, email, message } = req.body;
@@ -25,7 +26,7 @@ export default (db) => {
         message: 'Message envoyé avec succès.',
         contactId: result.insertedId,
       });
-    } catch (error) {
+    } catch (error:any) {
       console.error("Erreur lors de l'envoi du message :", error);
       res.status(500).json({
         message: "Erreur lors de l'envoi du message.",
@@ -39,7 +40,7 @@ export default (db) => {
     try {
       const messages = await db.collection('contact').find({}).toArray();
       res.json(messages);
-    } catch (error) {
+    } catch (error:any) {
       console.error('Erreur lors de la récupération des messages :', error);
       res.status(500).json({
         message: 'Erreur de récupération des messages',
