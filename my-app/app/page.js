@@ -1,4 +1,4 @@
-"use client"; // Assure-toi que ce fichier utilise React en mode client
+"use client"; 
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion"; // Importation de framer-motion
@@ -31,7 +31,7 @@ export default function Page() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gray-900 text-white font-sans">
-      {/* Fond animé avec effet parallax */}
+      {/* Fond animé */}
       <motion.div
         className="absolute inset-0 z-0 opacity-30 bg-cover"
         style={{

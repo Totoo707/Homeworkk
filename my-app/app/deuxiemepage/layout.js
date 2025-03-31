@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion"; // Importation de framer-motion
 
 export default function RootLayout({ children }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -49,15 +50,24 @@ export default function RootLayout({ children }) {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gray-900 text-white font-sans">
+      <div className="relative min-h-screen overflow-hidden bg-gray-900 text-white font-sans">
       {/* Fond animé */}
-      <div
-        className="absolute inset-0 z-0 opacity-20 bg-cover"
+      <motion.div
+        className="absolute inset-0 z-0 opacity-30 bg-cover"
         style={{
           backgroundImage:
             "url('https://pluspng.com/img-png/stars-png-hd-stars-in-the-sky-looped-animation-beautiful-night-with-twinkling-flares-hd-1080-motion-background-videoblocks-1920.png')",
         }}
-      ></div>
+        animate={{ y: ["0%", "5%"], opacity: [0.3, 0.1] }}
+        transition={{
+          duration: 30,
+          repeat: Infinity,
+          repeatType: "reverse",
+          ease: "linear",
+        }}
+      ></motion.div>
+
+      
 
       <div className="relative z-10 flex flex-col min-h-screen">
 
