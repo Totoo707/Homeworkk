@@ -1,13 +1,16 @@
 "use client"; // Assure-toi que ce fichier utilise React en mode client
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext"; // Assure-toi d'importer correctement le contexte
+import { useRouter } from "next/navigation"; // Utilisation de useRouter pour Next.js 13+
 
 export default function ConnexionPage() {
   const { login, error, loading } = useAuth(); // Le hook d'authentification
   const [email, setEmail] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
   const [message, setMessage] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Nouveau state pour vérifier si l'utilisateur est connecté
+  const router = useRouter(); // Déclaration du hook useRouter
 
   const handleLogin = async (e) => {
     e.preventDefault(); // Empêche la soumission du formulaire par défaut
@@ -15,10 +18,18 @@ export default function ConnexionPage() {
     setMessage(""); // Réinitialiser le message d'erreur ou de succès avant chaque tentative
     try {
       await login(email, motDePasse); // Appelle la fonction de login dans le contexte
+      setIsLoggedIn(true); // L'utilisateur est connecté
     } catch (error) {
       setMessage(error.message); // Affiche l'erreur si la connexion échoue
     }
   };
+
+  // Utilisation de useEffect pour effectuer la redirection après l'authentification réussie
+  useEffect(() => {
+    if (isLoggedIn) {
+      router.push("/"); // Redirige vers la page d'accueil après la connexion
+    }
+  }, [isLoggedIn, router]); // Ne redirige que lorsque isLoggedIn change
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white p-6">
