@@ -27,7 +27,7 @@ export default (db:any) => {
       const motDePasseValide = await bcrypt.compare(
         motDePasse,
         utilisateur.motDePasse
-      );
+      ); 
 
       if (!motDePasseValide) {
         return res.status(401).json({ message: 'Mot de passe incorrect.' });
