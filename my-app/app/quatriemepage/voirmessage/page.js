@@ -3,6 +3,7 @@
 import { useAuth } from "../../../context/AuthContext"; // Import du contexte d'authentification
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion"; // Importation de framer-motion
 
 export default function VoirMessage() {
   const { user, loading } = useAuth(); // Utilisation du contexte d'authentification
@@ -52,37 +53,61 @@ export default function VoirMessage() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6">
-      <h1 className="text-3xl font-bold mb-6 text-center">Messages reçus</h1>
+      <motion.h1
+        className="text-3xl font-bold mb-6 text-center"
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        Messages reçus
+      </motion.h1>
 
       {message && (
-        <div className="bg-red-500 text-white text-lg font-semibold rounded-lg p-4 mb-6">
+        <motion.div
+          className="bg-red-500 text-white text-lg font-semibold rounded-lg p-4 mb-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+        >
           {message}
-        </div>
+        </motion.div>
       )}
 
       {messages.length === 0 ? (
-        <p className="text-lg text-center">Aucun message pour le moment.</p>
+        <motion.p
+          className="text-lg text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+        >
+          Aucun message pour le moment.
+        </motion.p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+        >
           {messages.map((msg) => (
-            <div
+            <motion.div
               key={msg._id}
               className="p-4 bg-gray-800 rounded-lg shadow-md space-y-2 transition-transform transform hover:scale-105 hover:bg-gray-700 hover:shadow-lg"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6 }}
             >
-              {/* Affichage du nom, en utilisant msg.nom ou msg.name selon les données */}
               <h2 className="text-xl font-semibold text-yellow-400 truncate">
-                {msg.nom || msg.name || "Nom non disponible"} {/* Affichage conditionnel */}
+                {msg.nom || msg.name || "Nom non disponible"}
               </h2>
               <p className="text-sm text-gray-400 truncate">{msg.email}</p>
-              <p className="text-sm text-gray-300 line-clamp-3">
-                {msg.message}
-              </p>
+              <p className="text-sm text-gray-300 line-clamp-3">{msg.message}</p>
               <p className="text-xs text-gray-500">
                 Reçu le : {new Date(msg.date).toLocaleString()}
               </p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
     </div>
   );
