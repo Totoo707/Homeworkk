@@ -1,43 +1,38 @@
 "use client";
 
-import { useAuth } from "../../../context/AuthContext"; // Import du contexte d'authentification
+import { useAuth } from "../../../context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion"; // Importation de framer-motion
+import { motion } from "framer-motion";
+import axios from "axios";
 
 export default function VoirMessage() {
-  const { user, loading } = useAuth(); // Utilisation du contexte d'authentification
+  const { user, loading } = useAuth();
   const router = useRouter();
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
 
-  // Redirige vers la page de connexion si l'utilisateur n'est pas connecté
+  // Redirection si non connecté
   useEffect(() => {
     if (!loading && !user) {
       router.push("/connexion");
     }
   }, [loading, user, router]);
 
-  // Fonction pour récupérer les messages
+  // Récupération des messages avec Axios
   const fetchMessages = async () => {
     try {
-      const response = await fetch("http://localhost:4000/api/contact", {
-        method: "GET",
+      const response = await axios.get("http://localhost:4000/api/contact", {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // Inclure le token JWT
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Données récupérées :", data); // Débogage pour vérifier les données récupérées
-        setMessages(data);
-      } else {
-        const errorData = await response.json();
-        setMessage(`Erreur : ${errorData.message}`);
-      }
+      setMessages(response.data);
     } catch (error) {
-      setMessage(`Erreur de réseau : ${error.message}`);
+      const errMsg =
+        error?.response?.data?.message || error.message || "Erreur inconnue";
+      setMessage(`Erreur : ${errMsg}`);
     }
   };
 
@@ -48,7 +43,7 @@ export default function VoirMessage() {
   }, [user]);
 
   if (!user) {
-    return null; // Empêche le rendu tant que l'utilisateur n'est pas connecté
+    return null;
   }
 
   return (

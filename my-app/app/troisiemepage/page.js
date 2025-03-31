@@ -1,22 +1,21 @@
 "use client";
 
-import { useAuth } from "../../context/AuthContext"; // Import du contexte d'authentification
+import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { motion } from "framer-motion"; // Importation de framer-motion
+import { motion } from "framer-motion";
+import axios from "axios";
 
 export default function Page() {
-  const { user, loading } = useAuth(); // Utilisation du contexte d'authentification
+  const { user, loading } = useAuth();
   const router = useRouter();
   const [message, setMessage] = useState("");
 
-  // Redirige vers la page de connexion si l'utilisateur n'est pas connecté
   if (!loading && !user) {
     router.push("/connexion");
     return null;
   }
 
-  // Fonction pour gérer l'ajout d'un article
   const handleAddArticle = async (e) => {
     e.preventDefault();
 
@@ -31,24 +30,26 @@ export default function Page() {
     }
 
     try {
-      const response = await fetch("http://localhost:4000/api/articles", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // Inclure le token JWT
-        },
-        body: JSON.stringify({ titre, contenu, auteur, image }),
-      });
+      const response = await axios.post(
+        "http://localhost:4000/api/articles",
+        { titre, contenu, auteur, image },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
-      if (response.ok) {
+      if (response.status === 201) {
         setMessage("Article ajouté avec succès !");
-        e.target.reset(); // Réinitialiser le formulaire
+        e.target.reset();
       } else {
-        const errorData = await response.json();
-        setMessage(`Erreur : ${errorData.message}`);
+        setMessage(`Erreur : ${response.data.message}`);
       }
     } catch (error) {
-      setMessage(`Erreur de réseau : ${error.message}`);
+      const errMsg = error?.response?.data?.message || error.message;
+      setMessage(`Erreur : ${errMsg}`);
     }
   };
 
@@ -72,8 +73,9 @@ export default function Page() {
 
           {message && (
             <motion.div
-              className={`${message.includes("succès") ? "bg-green-500" : "bg-red-500"
-                } text-white text-lg font-semibold rounded-lg p-4 mb-6`}
+              className={`${
+                message.includes("succès") ? "bg-green-500" : "bg-red-500"
+              } text-white text-lg font-semibold rounded-lg p-4 mb-6`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8 }}

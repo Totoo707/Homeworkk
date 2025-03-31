@@ -1,10 +1,12 @@
 "use client";
 
 import useSWR from "swr";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
-const fetcher = (url) => fetch(url).then((res) => res.json());
+// Axios fetcher pour SWR
+const fetcher = (url) => axios.get(url).then((res) => res.data);
 
 export default function Page() {
   const router = useRouter();
@@ -17,7 +19,9 @@ export default function Page() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-900">
-        <div className="text-2xl font-semibold text-white animate-pulse">Chargement...</div>
+        <div className="text-2xl font-semibold text-white animate-pulse">
+          Chargement...
+        </div>
       </div>
     );
   }
@@ -81,7 +85,8 @@ export default function Page() {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.8 }}
                   >
-                    ✍️ <span className="font-semibold">{article.auteur}</span>
+                    ✍️{" "}
+                    <span className="font-semibold">{article.auteur}</span>
                   </motion.p>
                 </motion.li>
               ))

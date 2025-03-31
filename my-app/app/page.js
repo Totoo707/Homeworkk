@@ -1,33 +1,23 @@
-"use client"; 
+"use client";
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion"; // Importation de framer-motion
+import { useState } from "react";
+import useSWR from "swr";
+import axios from "axios";
+import { motion } from "framer-motion";
 import Link from "next/link";
+
+// 👉 Axios + SWR : config du fetcher
+const fetcher = (url) => axios.get(url).then((res) => res.data);
 
 export default function Page() {
   const [showImage, setShowImage] = useState(false);
-  const [cards, setCards] = useState([]);
-  const [loading, setLoading] = useState(true);
+
+  // 👉 Remplace useEffect/fetch par SWR
+  const { data: cards, error, isLoading } = useSWR("/api/cards", fetcher);
 
   const handleButtonClick = () => {
     setShowImage(!showImage);
   };
-
-  useEffect(() => {
-    const fetchCards = async () => {
-      try {
-        const response = await fetch("/api/cards");
-        const data = await response.json();
-        setCards(data);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des cartes:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCards();
-  }, []); 
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gray-900 text-white font-sans">
@@ -48,8 +38,8 @@ export default function Page() {
       ></motion.div>
 
       <div className="relative z-10 flex flex-col min-h-screen">
-        {/* MAIN CONTENT */}
         <main className="flex-grow flex flex-col items-center justify-center px-8 py-16">
+          {/* SECTION INTRO */}
           <motion.section
             className="text-center mb-16"
             initial={{ opacity: 0 }}
@@ -70,7 +60,8 @@ export default function Page() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: "easeOut" }}
             >
-              Experience a modern web interface with seamless transitions, high performance, and a premium user experience.
+              Experience a modern web interface with seamless transitions, high
+              performance, and a premium user experience.
             </motion.p>
             <motion.button
               onClick={handleButtonClick}
@@ -82,6 +73,7 @@ export default function Page() {
             </motion.button>
           </motion.section>
 
+          {/* IMAGE SECTION */}
           {showImage && (
             <motion.section
               className="text-center mb-16"
@@ -106,11 +98,19 @@ export default function Page() {
             animate="visible"
             variants={{
               hidden: { opacity: 0, y: 50 },
-              visible: { opacity: 1, y: 0, transition: { duration: 1, staggerChildren: 0.2 } }
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: { duration: 1, staggerChildren: 0.2 },
+              },
             }}
           >
-            {loading ? (
+            {isLoading ? (
               <div className="text-xl text-gray-300">Chargement...</div>
+            ) : error ? (
+              <div className="text-red-400 text-xl">
+                Erreur de chargement des cartes.
+              </div>
             ) : (
               cards.map((card) => (
                 <motion.div
@@ -153,10 +153,10 @@ export default function Page() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <h4 className="text-2xl font-semibold text-gray-800 mb-3">{feature}</h4>
-                  <p className="text-base text-gray-600">
-                    Voir les articles
-                  </p>
+                  <h4 className="text-2xl font-semibold text-gray-800 mb-3">
+                    {feature}
+                  </h4>
+                  <p className="text-base text-gray-600">Voir les articles</p>
                 </motion.div>
               ))}
             </div>
@@ -169,7 +169,9 @@ export default function Page() {
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
           >
-            <h3 className="text-3xl font-semibold mb-6">What Users Are Saying</h3>
+            <h3 className="text-3xl font-semibold mb-6">
+              What Users Are Saying
+            </h3>
             <div className="space-y-6">
               {["User 1", "User 2", "User 3"].map((user, index) => (
                 <motion.div
@@ -179,7 +181,8 @@ export default function Page() {
                   whileTap={{ scale: 0.95 }}
                 >
                   <p className="text-base">
-                    "This app redefines modern web experiences – simply amazing!"
+                    "This app redefines modern web experiences – simply
+                    amazing!"
                   </p>
                   <p className="text-sm text-gray-500 mt-2">- {user}</p>
                 </motion.div>
