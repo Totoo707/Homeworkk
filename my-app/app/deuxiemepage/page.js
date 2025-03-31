@@ -1,41 +1,31 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import useSWR from "swr";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion"; // Ajout d'animations
+import { motion } from "framer-motion";
+
+const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function Page() {
-  const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [isClient, setIsClient] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    setIsClient(true);
+  const { data: articles, error, isLoading } = useSWR(
+    "http://localhost:4000/api/articles",
+    fetcher
+  );
 
-    const fetchArticles = async () => {
-      try {
-        const response = await fetch("http://localhost:4000/api/articles");
-        if (!response.ok) throw new Error("Erreur lors de la récupération des articles");
-
-        const data = await response.json();
-        setArticles(data);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des articles :", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchArticles();
-  }, []);
-
-  if (!isClient) return null;
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-900">
         <div className="text-2xl font-semibold text-white animate-pulse">Chargement...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-900 text-red-400">
+        Erreur lors du chargement des articles.
       </div>
     );
   }
@@ -59,7 +49,7 @@ export default function Page() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
           >
-            {articles.length > 0 ? (
+            {articles?.length > 0 ? (
               articles.map((article) => (
                 <motion.li
                   key={article._id}
@@ -111,4 +101,3 @@ export default function Page() {
     </div>
   );
 }
- 
