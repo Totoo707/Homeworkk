@@ -3,27 +3,28 @@
 import Link from "next/link";
 import { useAuth } from "../../context/AuthContext";
 import { useState } from "react";
-import ContactPopup from "./ContactPopup"; // Import du composant ContactPopup
+import ContactPopup from "./ContactPopup";
 
 export default function Header() {
-  const { user, logout } = useAuth(); // Utilisation du contexte d'authentification
-  const [isPopupOpen, setIsPopupOpen] = useState(false); // État pour gérer l'ouverture de la popup
+  const { user, logout } = useAuth();
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   return (
     <>
-      <header className="bg-black backdrop-blur-md py-6 px-8 top-0 left-0 w-full z-50">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
-          <Link href="/">
-            <h1 className="text-4xl md:text-5xl font-extrabold tracking-wider text-white cursor-pointer">
+      <header className="top-0 left-0 w-full bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 backdrop-blur-lg shadow-lg z-50">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
+          <Link href="/" className="mb-3 md:mb-0">
+            <h1 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-500 tracking-wide">
               Next.js App
             </h1>
           </Link>
-          <nav className="mt-4 md:mt-0">
-            <ul className="flex space-x-8">
+
+          <nav>
+            <ul className="flex flex-wrap justify-center md:justify-end gap-6 text-white font-medium text-lg">
               <li>
                 <Link
                   href="/"
-                  className="text-lg text-white hover:text-yellow-400 transition-colors duration-300"
+                  className="hover:text-yellow-400 transition-colors duration-300"
                 >
                   Accueil
                 </Link>
@@ -31,25 +32,26 @@ export default function Header() {
               <li>
                 <Link
                   href="/deuxiemepage"
-                  className="text-lg text-white hover:text-yellow-400 transition-colors duration-300"
+                  className="hover:text-yellow-400 transition-colors duration-300"
                 >
                   Articles
                 </Link>
               </li>
               <li>
                 <button
-                  onClick={() => setIsPopupOpen(true)} // Ouvre la popup
-                  className="text-lg text-white hover:text-yellow-400 transition-colors duration-300"
+                  onClick={() => setIsPopupOpen(true)}
+                  className="hover:text-yellow-400 transition-colors duration-300"
                 >
                   Contact
                 </button>
               </li>
+
               {user && (
                 <>
                   <li>
                     <Link
                       href="/troisiemepage"
-                      className="text-lg text-white hover:text-yellow-400 transition-colors duration-300"
+                      className="hover:text-yellow-400 transition-colors duration-300"
                     >
                       Ajouter un article
                     </Link>
@@ -57,18 +59,19 @@ export default function Header() {
                   <li>
                     <Link
                       href="/quatriemepage/voirmessage"
-                      className="text-lg text-white hover:text-yellow-400 transition-colors duration-300"
+                      className="hover:text-yellow-400 transition-colors duration-300"
                     >
                       Voir les messages
                     </Link>
                   </li>
                 </>
               )}
+
               {user ? (
                 <li>
                   <button
                     onClick={logout}
-                    className="text-lg text-white hover:text-yellow-400 transition-colors duration-300"
+                    className="hover:text-red-400 transition-colors duration-300"
                   >
                     Déconnexion
                   </button>
@@ -77,7 +80,7 @@ export default function Header() {
                 <li>
                   <Link
                     href="/connexion"
-                    className="text-lg text-white hover:text-yellow-400 transition-colors duration-300"
+                    className="hover:text-yellow-400 transition-colors duration-300"
                   >
                     Connexion
                   </Link>
@@ -88,10 +91,8 @@ export default function Header() {
         </div>
       </header>
 
-      {/* Affichage de la popup */}
-      {isPopupOpen && (
-        <ContactPopup onClose={() => setIsPopupOpen(false)} /> // Ferme la popup
-      )}
+      {/* Contact Popup */}
+      {isPopupOpen && <ContactPopup onClose={() => setIsPopupOpen(false)} />}
     </>
   );
 }

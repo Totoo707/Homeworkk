@@ -12,14 +12,12 @@ export default function VoirMessage() {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
 
-  // Redirection si non connecté
   useEffect(() => {
     if (!loading && !user) {
       router.push("/connexion");
     }
   }, [loading, user, router]);
 
-  // Récupération des messages avec Axios
   const fetchMessages = async () => {
     try {
       const response = await axios.get("http://localhost:4000/api/contact", {
@@ -27,11 +25,9 @@ export default function VoirMessage() {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-
       setMessages(response.data);
     } catch (error) {
-      const errMsg =
-        error?.response?.data?.message || error.message || "Erreur inconnue";
+      const errMsg = error?.response?.data?.message || error.message || "Erreur inconnue";
       setMessage(`Erreur : ${errMsg}`);
     }
   };
@@ -42,24 +38,22 @@ export default function VoirMessage() {
     }
   }, [user]);
 
-  if (!user) {
-    return null;
-  }
+  if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white p-6">
       <motion.h1
-        className="text-3xl font-bold mb-6 text-center"
+        className="text-5xl font-extrabold text-center bg-gradient-to-r from-yellow-400 to-pink-500 bg-clip-text text-transparent mb-12"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-      > 
-        Messages reçus
+      >
+        📬 Messages Reçus
       </motion.h1>
 
       {message && (
         <motion.div
-          className="bg-red-500 text-white text-lg font-semibold rounded-lg p-4 mb-6"
+          className="bg-red-600 text-white text-lg font-semibold rounded-xl p-5 mb-8 shadow-lg"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
@@ -70,7 +64,7 @@ export default function VoirMessage() {
 
       {messages.length === 0 ? (
         <motion.p
-          className="text-lg text-center"
+          className="text-xl text-gray-300 text-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
@@ -79,7 +73,7 @@ export default function VoirMessage() {
         </motion.p>
       ) : (
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
@@ -87,18 +81,18 @@ export default function VoirMessage() {
           {messages.map((msg) => (
             <motion.div
               key={msg._id}
-              className="p-4 bg-gray-800 rounded-lg shadow-md space-y-2 transition-transform transform hover:scale-105 hover:bg-gray-700 hover:shadow-lg"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              className="bg-gray-800 p-6 rounded-3xl shadow-2xl hover:shadow-yellow-400/30 hover:scale-105 transition-all duration-300 space-y-3"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <h2 className="text-xl font-semibold text-yellow-400 truncate">
+              <h2 className="text-2xl font-bold text-yellow-400">
                 {msg.nom || msg.name || "Nom non disponible"}
               </h2>
-              <p className="text-sm text-gray-400 truncate">{msg.email}</p>
-              <p className="text-sm text-gray-300 line-clamp-3">{msg.message}</p>
-              <p className="text-xs text-gray-500">
-                Reçu le : {new Date(msg.date).toLocaleString()}
+              <p className="text-sm text-pink-400">📧 {msg.email}</p>
+              <p className="text-base text-gray-200">📝 {msg.message}</p>
+              <p className="text-sm text-gray-500">
+                🕒 Reçu le : {new Date(msg.date).toLocaleString()}
               </p>
             </motion.div>
           ))}

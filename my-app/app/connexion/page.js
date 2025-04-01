@@ -6,61 +6,58 @@ import { useRouter } from "next/navigation"; // Utilisation de useRouter pour Ne
 import { motion } from "framer-motion"; // Importation de framer-motion
 
 export default function ConnexionPage() {
-  const { login, error, loading } = useAuth(); // Le hook d'authentification
+  const { login, error, loading } = useAuth();
   const [email, setEmail] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
   const [message, setMessage] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Nouveau state pour vérifier si l'utilisateur est connecté
-  const router = useRouter(); // Déclaration du hook useRouter
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const router = useRouter();
 
   const handleLogin = async (e) => {
-    e.preventDefault(); // Empêche la soumission du formulaire par défaut
-
-    setMessage(""); // Réinitialiser le message d'erreur ou de succès avant chaque tentative
+    e.preventDefault();
+    setMessage("");
     try {
-      await login(email, motDePasse); // Appelle la fonction de login dans le contexte
-      setIsLoggedIn(true); // L'utilisateur est connecté
+      await login(email, motDePasse);
+      setIsLoggedIn(true);
     } catch (error) {
-      setMessage(error.message); // Affiche l'erreur si la connexion échoue
+      setMessage(error.message);
     }
   };
 
-  // Utilisation de useEffect pour effectuer la redirection après l'authentification réussie
   useEffect(() => {
     if (isLoggedIn) {
-      router.push("/"); // Redirige vers la page d'accueil après la connexion
+      router.push("/");
     }
-  }, [isLoggedIn, router]); // Ne redirige que lorsque isLoggedIn change
+  }, [isLoggedIn, router]);
 
   return (
     <motion.div
-      className="min-h-screen flex items-center justify-center bg-gray-900 text-white p-6"
+      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white px-4 py-10"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
     >
       <motion.div
-        className="w-full max-w-2xl p-12 bg-gray-800 rounded-2xl shadow-2xl border border-gray-700"
+        className="w-full max-w-xl p-10 bg-white/5 backdrop-blur-lg border border-white/10 rounded-3xl shadow-2xl"
         initial={{ y: -50 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.8 }}
       >
         <motion.h2
-          className="text-4xl font-bold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500"
+          className="text-4xl font-extrabold text-center mb-8 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
         >
-          Connexion
+          🔐 Connexion
         </motion.h2>
 
-        {/* Affichage des messages d'erreur ou de succès */}
         {error && (
           <motion.div
-            className="bg-red-500 text-white text-lg font-semibold rounded-lg p-4 mb-6 shadow-md"
+            className="bg-red-500 text-white text-base font-medium rounded-xl p-4 mb-6 shadow-md"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.6 }}
           >
             {error}
           </motion.div>
@@ -68,22 +65,17 @@ export default function ConnexionPage() {
 
         {message && (
           <motion.div
-            className="bg-red-500 text-white text-lg font-semibold rounded-lg p-4 mb-6 shadow-md"
+            className="bg-red-500 text-white text-base font-medium rounded-xl p-4 mb-6 shadow-md"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.6 }}
           >
             {message}
           </motion.div>
         )}
 
-        <form onSubmit={handleLogin} className="space-y-8">
-          <motion.div
-            className="flex flex-col"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
-          >
+        <form onSubmit={handleLogin} className="space-y-6">
+          <div className="flex flex-col">
             <label htmlFor="email" className="text-lg font-medium text-gray-300 mb-2">
               Email
             </label>
@@ -92,17 +84,12 @@ export default function ConnexionPage() {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="p-4 rounded-lg text-gray-900 border border-gray-600 focus:outline-none focus:ring-4 focus:ring-purple-300 transition duration-300 ease-in-out"
-              placeholder="Votre email"
+              className="p-4 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              placeholder="Entrez votre email"
             />
-          </motion.div>
+          </div>
 
-          <motion.div
-            className="flex flex-col"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
-          >
+          <div className="flex flex-col">
             <label htmlFor="motDePasse" className="text-lg font-medium text-gray-300 mb-2">
               Mot de passe
             </label>
@@ -111,20 +98,20 @@ export default function ConnexionPage() {
               id="motDePasse"
               value={motDePasse}
               onChange={(e) => setMotDePasse(e.target.value)}
-              className="p-4 rounded-lg text-gray-900 border border-gray-600 focus:outline-none focus:ring-4 focus:ring-purple-300 transition duration-300 ease-in-out"
-              placeholder="Votre mot de passe"
+              className="p-4 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              placeholder="Entrez votre mot de passe"
             />
-          </motion.div>
+          </div>
 
           <motion.button
             type="submit"
-            className="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-lg shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-purple-300"
-            disabled={loading} // Désactive le bouton pendant le chargement
-            initial={{ scale: 1 }}
+            className="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-lg font-semibold rounded-xl shadow-lg hover:scale-105 transition-transform"
             whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             transition={{ duration: 0.3 }}
+            disabled={loading}
           >
-            {loading ? "Chargement..." : "Se connecter"}
+            {loading ? "Connexion en cours..." : "Se connecter"}
           </motion.button>
         </form>
       </motion.div>

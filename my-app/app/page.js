@@ -6,77 +6,67 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
-// 👉 Axios + SWR : config du fetcher
 const fetcher = (url) => axios.get(url).then((res) => res.data);
 
 export default function Page() {
   const [showImage, setShowImage] = useState(false);
-
-  // 👉 Remplace useEffect/fetch par SWR
   const { data: cards, error, isLoading } = useSWR("/api/cards", fetcher);
 
-  const handleButtonClick = () => {
-    setShowImage(!showImage);
-  };
+  const handleButtonClick = () => setShowImage(!showImage);
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gray-900 text-white font-sans">
+    <div className="relative min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white font-sans overflow-hidden">
       {/* Fond animé */}
       <motion.div
-        className="absolute inset-0 z-0 opacity-30 bg-cover"
+        className="absolute inset-0 z-0 opacity-20 bg-cover"
         style={{
           backgroundImage:
-            "url('https://pluspng.com/img-png/stars-png-hd-stars-in-the-sky-looped-animation-beautiful-night-with-twinkling-flares-hd-1080-motion-background-videoblocks-1920.png')",
+            "url('https://cdn.pixabay.com/photo/2017/08/30/07/52/space-2695569_1280.jpg')",
         }}
         animate={{ y: ["0%", "5%"], opacity: [0.3, 0.1] }}
-        transition={{
-          duration: 30,
-          repeat: Infinity,
-          repeatType: "reverse",
-          ease: "linear",
-        }}
-      ></motion.div>
+        transition={{ duration: 30, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
+      />
 
-      <div className="relative z-10 flex flex-col min-h-screen">
-        <main className="flex-grow flex flex-col items-center justify-center px-8 py-16">
-          {/* SECTION INTRO */}
+      <div className="relative z-10 flex flex-col min-h-screen px-4">
+        <main className="flex-grow flex flex-col items-center justify-center py-20">
+          {/* INTRO */}
           <motion.section
-            className="text-center mb-16"
+            className="text-center mb-16 max-w-3xl"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
           >
-            <motion.h2
-              className="text-4xl md:text-5xl font-bold mb-4"
+            <motion.h1
+              className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-yellow-400 to-pink-500 bg-clip-text text-transparent mb-4"
               initial={{ opacity: 0, y: -50 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, ease: "easeOut" }}
+              transition={{ duration: 1 }}
             >
-              Welcome to Next.js!
-            </motion.h2>
+              🚀 Discover the Universe of Next.js
+            </motion.h1>
             <motion.p
-              className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto mb-8 leading-relaxed"
-              initial={{ opacity: 0, y: 50 }}
+              className="text-lg md:text-xl text-gray-300 mb-8"
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, ease: "easeOut" }}
+              transition={{ duration: 1.2 }}
             >
-              Experience a modern web interface with seamless transitions, high
-              performance, and a premium user experience.
+              Immersive, performant and sleek — this is the frontend you were
+              looking for.
             </motion.p>
             <motion.button
               onClick={handleButtonClick}
-              className="px-10 py-4 bg-gradient-to-r from-yellow-500 to-pink-500 text-white rounded-full shadow-lg hover:scale-105 transition-transform duration-300"
+              className="px-8 py-3 text-lg bg-gradient-to-r from-yellow-400 to-pink-500 text-white font-semibold rounded-full shadow-md hover:scale-105 transition-transform duration-300"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
             >
-              Show More
+              {showImage ? "Hide" : "Show More"}
             </motion.button>
           </motion.section>
 
           {/* IMAGE SECTION */}
           {showImage && (
             <motion.section
-              className="text-center mb-16"
+              className="mb-16 text-center"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1 }}
@@ -84,16 +74,14 @@ export default function Page() {
               <motion.img
                 src="https://cdn.photographylife.com/wp-content/uploads/2014/06/Nikon-D810-Image-Sample-6.jpg"
                 alt="Sample"
-                className="mx-auto mb-6 w-48 h-48 object-cover rounded-full shadow-2xl hover:scale-110 transition-transform duration-500"
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.3 }}
+                className="mx-auto w-48 h-48 object-cover rounded-full border-4 border-pink-500 shadow-2xl hover:scale-110 transition duration-500"
               />
             </motion.section>
           )}
 
           {/* CARDS SECTION */}
           <motion.section
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 w-full max-w-6xl"
+            className="w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10"
             initial="hidden"
             animate="visible"
             variants={{
@@ -106,32 +94,20 @@ export default function Page() {
             }}
           >
             {isLoading ? (
-              <div className="text-xl text-gray-300">Chargement...</div>
+              <p className="text-xl text-gray-400">Chargement des cartes...</p>
             ) : error ? (
-              <div className="text-red-400 text-xl">
-                Erreur de chargement des cartes.
-              </div>
+              <p className="text-red-500 text-xl">Erreur de chargement</p>
             ) : (
               cards.map((card) => (
                 <motion.div
                   key={card._id}
-                  className="bg-white p-8 rounded-3xl shadow-xl hover:scale-105 transition-transform duration-300"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
+                  className="bg-gray-800 p-6 rounded-2xl shadow-xl hover:scale-105 transition duration-300"
+                  whileHover={{ scale: 1.05 }}
                 >
-                  <motion.h3
-                    className="text-2xl font-semibold text-gray-800 mb-3"
-                    whileHover={{ scale: 1.05 }}
-                  >
+                  <h3 className="text-2xl font-bold text-yellow-400 mb-2">
                     {card["Card Title"]}
-                  </motion.h3>
-                  <motion.p
-                    className="text-base text-gray-600"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    {card["Card p"]}
-                  </motion.p>
+                  </h3>
+                  <p className="text-gray-300">{card["Card p"]}</p>
                 </motion.div>
               ))
             )}
@@ -139,52 +115,52 @@ export default function Page() {
 
           {/* FEATURES SECTION */}
           <motion.section
-            className="bg-gradient-to-r from-yellow-500 to-pink-500 text-white p-10 rounded-3xl shadow-2xl mt-16 w-full max-w-5xl"
+            className="mt-20 bg-gradient-to-r from-pink-500 to-yellow-500 text-white rounded-3xl p-10 max-w-5xl shadow-xl"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
           >
-            <h3 className="text-3xl font-semibold mb-6">Les Features</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {["Feature 1", "Feature 2", "Feature 3"].map((feature, index) => (
-                <motion.div
-                  key={index}
-                  className="bg-white p-8 rounded-3xl shadow-lg hover:scale-105 transition-transform duration-300"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <h4 className="text-2xl font-semibold text-gray-800 mb-3">
-                    {feature}
-                  </h4>
-                  <p className="text-base text-gray-600">Voir les articles</p>
-                </motion.div>
-              ))}
+            <h3 className="text-3xl font-semibold mb-6">✨ Nos Fonctionnalités</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {["Ultra Rapide", "Composants Dynamiques", "Design Réactif"].map(
+                (feature, i) => (
+                  <motion.div
+                    key={i}
+                    className="bg-white text-gray-900 p-6 rounded-xl shadow-lg hover:scale-105 transition-transform"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <h4 className="text-xl font-semibold mb-2">{feature}</h4>
+                    <p className="text-gray-600 text-sm">
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    </p>
+                  </motion.div>
+                )
+              )}
             </div>
           </motion.section>
 
           {/* AVIS SECTION */}
           <motion.section
-            className="bg-gradient-to-r from-yellow-500 to-pink-500 text-white p-10 rounded-3xl shadow-2xl mt-16 w-full max-w-5xl"
+            className="mt-20 bg-gradient-to-r from-yellow-500 to-pink-500 text-white rounded-3xl p-10 max-w-5xl shadow-xl"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
           >
-            <h3 className="text-3xl font-semibold mb-6">
-              What Users Are Saying
-            </h3>
-            <div className="space-y-6">
-              {["User 1", "User 2", "User 3"].map((user, index) => (
+            <h3 className="text-3xl font-semibold mb-6">🗣️ Avis Utilisateurs</h3>
+            <div className="grid md:grid-cols-3 gap-8">
+              {["Sarah", "Lucas", "Emma"].map((name, index) => (
                 <motion.div
                   key={index}
-                  className="bg-white text-black p-6 rounded-xl shadow-lg hover:scale-105 transition-transform duration-300"
+                  className="bg-gray-100 p-6 rounded-xl shadow-md hover:scale-105 transition-transform"
                   whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
                 >
-                  <p className="text-base">
-                    "This app redefines modern web experiences – simply
-                    amazing!"
+                  <p className="text-gray-700 italic">
+                    "Ce site m'a bluffé par sa rapidité et son design !"
                   </p>
-                  <p className="text-sm text-gray-500 mt-2">- {user}</p>
+                  <p className="mt-2 text-sm text-right text-gray-500">
+                    — {name}
+                  </p>
                 </motion.div>
               ))}
             </div>

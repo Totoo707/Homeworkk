@@ -1,5 +1,6 @@
 import express from 'express';
 import mongoose, { Schema, model } from 'mongoose';
+import Joi from 'joi';
 const router = express.Router();
 // ✅ Schéma Mongoose
 const articleSchema = new Schema({
@@ -17,6 +18,13 @@ const connectDB = async () => {
         await mongoose.connect('mongodb://localhost:27017/maBaseDeDonnées');
     }
 };
+// ✅ Schéma Joi pour validation des articles
+const articleSchemaJoi = Joi.object({
+    titre: Joi.string().min(3).max(100).required(),
+    auteur: Joi.string().min(3).max(50).required(),
+    contenu: Joi.string().min(10).required(),
+    image: Joi.string().uri().required(),
+});
 // ✅ Route GET / - récupérer tous les articles
 router.get('/', async (_req, res) => {
     try {
@@ -48,13 +56,16 @@ router.get('/:id', async (req, res) => {
 });
 // ✅ Route POST / - ajouter un nouvel article
 router.post('/', async (req, res) => {
-    const { titre, auteur, contenu, image } = req.body;
-    if (!titre || !auteur || !contenu || !image) {
-        return res.status(400).json({ message: 'Tous les champs sont obligatoires.' });
+    const { error } = articleSchemaJoi.validate(req.body);
+    if (error) {
+        return res.status(400).json({
+            message: 'Données invalides.',
+            details: error.details.map((detail) => detail.message),
+        });
     }
     try {
         await connectDB();
-        const nouvelArticle = new ArticleModel({ titre, auteur, contenu, image });
+        const nouvelArticle = new ArticleModel(req.body);
         const savedArticle = await nouvelArticle.save();
         res.status(201).json({ message: 'Article ajouté avec succès.', articleId: savedArticle._id });
     }

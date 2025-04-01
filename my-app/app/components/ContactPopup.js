@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion"; // Importation de framer-motion
+import { motion } from "framer-motion";
 
 export default function ContactPopup({ onClose }) {
   const [name, setName] = useState("");
@@ -40,60 +40,50 @@ export default function ContactPopup({ onClose }) {
 
   return (
     <motion.div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.4 }}
     >
       <motion.div
-        className="bg-white text-gray-900 p-8 rounded-3xl shadow-2xl w-full max-w-3xl relative"
-        initial={{ scale: 0.95 }}
+        className="bg-white text-gray-900 p-8 rounded-3xl shadow-2xl w-full max-w-2xl relative"
+        initial={{ scale: 0.9 }}
         animate={{ scale: 1 }}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.3 }}
       >
-        {/* Bouton pour fermer la popup */}
+        {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 focus:outline-none"
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl"
         >
           ✖
         </button>
 
+        {/* Title */}
         <motion.h3
-          className="text-3xl font-extrabold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-500"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
+          className="text-3xl font-extrabold text-center mb-6 bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-blue-600"
         >
           Contactez-nous
         </motion.h3>
 
+        {/* Response Message */}
         {responseMessage && (
-          <motion.div
+          <div
             className={`${
               responseMessage.includes("succès")
-                ? "bg-green-100 text-green-800"
-                : "bg-red-100 text-red-800"
-            } text-lg font-semibold rounded-lg p-4 mb-6 shadow-md`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
+            } text-base font-medium rounded-xl px-4 py-3 mb-6`}
           >
             {responseMessage}
-          </motion.div>
+          </div>
         )}
 
+        {/* Form */}
         <form className="space-y-6" onSubmit={handleSubmit}>
-          <motion.div
-            className="flex flex-col"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
-          >
-            <label
-              htmlFor="name"
-              className="text-lg font-medium text-gray-700 mb-2"
-            >
+          <div>
+            <label htmlFor="name" className="block mb-2 text-lg text-gray-700 font-medium">
               Nom
             </label>
             <input
@@ -101,21 +91,13 @@ export default function ContactPopup({ onClose }) {
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="p-4 rounded-lg text-gray-900 border border-gray-300 focus:outline-none focus:ring-4 focus:ring-teal-300 transition duration-300 ease-in-out shadow-sm"
               placeholder="Votre nom"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-4 focus:ring-teal-300 focus:outline-none"
             />
-          </motion.div>
+          </div>
 
-          <motion.div
-            className="flex flex-col"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
-          >
-            <label
-              htmlFor="email"
-              className="text-lg font-medium text-gray-700 mb-2"
-            >
+          <div>
+            <label htmlFor="email" className="block mb-2 text-lg text-gray-700 font-medium">
               Email
             </label>
             <input
@@ -123,39 +105,29 @@ export default function ContactPopup({ onClose }) {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="p-4 rounded-lg text-gray-900 border border-gray-300 focus:outline-none focus:ring-4 focus:ring-teal-300 transition duration-300 ease-in-out shadow-sm"
               placeholder="Votre email"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-4 focus:ring-teal-300 focus:outline-none"
             />
-          </motion.div>
+          </div>
 
-          <motion.div
-            className="flex flex-col"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
-          >
-            <label
-              htmlFor="message"
-              className="text-lg font-medium text-gray-700 mb-2"
-            >
+          <div>
+            <label htmlFor="message" className="block mb-2 text-lg text-gray-700 font-medium">
               Message
             </label>
             <textarea
               id="message"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              className="p-4 rounded-lg text-gray-900 border border-gray-300 focus:outline-none focus:ring-4 focus:ring-teal-300 transition duration-300 ease-in-out shadow-sm"
               placeholder="Votre message"
-              rows="6"
+              rows="5"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-4 focus:ring-teal-300 focus:outline-none resize-none"
             ></textarea>
-          </motion.div>
+          </div>
 
           <motion.button
             type="submit"
-            className="w-full py-4 bg-gradient-to-r from-teal-500 to-blue-600 text-white font-bold rounded-lg shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-teal-300"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
+            className="w-full py-3 rounded-xl font-semibold bg-gradient-to-r from-teal-500 to-blue-600 text-white shadow-lg hover:shadow-xl hover:scale-105 transition"
+            whileTap={{ scale: 0.98 }}
           >
             Envoyer le message
           </motion.button>
