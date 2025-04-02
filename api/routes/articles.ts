@@ -1,10 +1,13 @@
-import express, { Request, Response, Router } from 'express';
+import express, { Request, Response } from 'express';
 import mongoose, { Schema, model, Document } from 'mongoose';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 import Joi from 'joi';
 
 const router = express.Router();
 
-// ✅ Interface TypeScript pour un article
+// Interface
 interface Article extends Document {
   titre: string;
   auteur: string;
@@ -13,7 +16,7 @@ interface Article extends Document {
   date?: Date;
 }
 
-// ✅ Schéma Mongoose
+// Schéma Mongoose
 const articleSchema = new Schema<Article>({
   titre: { type: String, required: true },
   auteur: { type: String, required: true },
@@ -22,36 +25,47 @@ const articleSchema = new Schema<Article>({
   date: { type: Date, default: Date.now },
 });
 
-// ✅ Modèle Mongoose (évite de recréer le modèle s'il existe déjà)
 const ArticleModel = mongoose.models.Article || model<Article>('Article', articleSchema);
 
-// ✅ Connexion Mongoose (à faire une seule fois dans ton app)
+// Connexion MongoDB
 const connectDB = async () => {
   if (mongoose.connection.readyState === 0) {
     await mongoose.connect('mongodb://localhost:27017/maBaseDeDonnées');
   }
 };
 
-// ✅ Schéma Joi pour validation des articles
+// Multer (upload d'image dans /uploads)
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = 'uploads/';
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+const upload = multer({ storage });
+
+// Joi (valide les champs texte)
 const articleSchemaJoi = Joi.object({
-  titre: Joi.string().min(3).max(100).required(),
-  auteur: Joi.string().min(3).max(50).required(),
-  contenu: Joi.string().min(10).required(),
-  image: Joi.string().uri().required(),
+  titre: Joi.string().required(),
+  auteur: Joi.string().required(),
+  contenu: Joi.string().required(),
 });
 
-// ✅ Route GET / - récupérer tous les articles
+// ✅ GET /api/articles - tous les articles
 router.get('/', async (_req: Request, res: Response) => {
   try {
     await connectDB();
     const articles = await ArticleModel.find();
     res.json(articles);
-  } catch (error: any) {
-    res.status(500).json({ message: 'Erreur de récupération des articles', error: error.message });
+  } catch (err: any) {
+    res.status(500).json({ message: 'Erreur serveur', error: err.message });
   }
 });
 
-// ✅ Route GET /:id - récupérer un article par ID
+// ✅ GET /api/articles/:id - un article par ID
 router.get('/:id', async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -71,24 +85,30 @@ router.get('/:id', async (req: Request, res: Response) => {
   }
 });
 
-// ✅ Route POST / - ajouter un nouvel article
-router.post('/', async (req: Request, res: Response) => {
-  const { error } = articleSchemaJoi.validate(req.body);
+// ✅ POST /api/articles - ajouter un article avec image
+router.post('/', upload.single('image'), async (req: Request, res: Response) => {
+  const { titre, auteur, contenu } = req.body;
 
+  const { error } = articleSchemaJoi.validate({ titre, auteur, contenu });
   if (error) {
     return res.status(400).json({
       message: 'Données invalides.',
-      details: error.details.map((detail) => detail.message),
+      details: error.details.map((d) => d.message),
     });
   }
 
   try {
     await connectDB();
-    const nouvelArticle = new ArticleModel(req.body);
-    const savedArticle = await nouvelArticle.save();
-    res.status(201).json({ message: 'Article ajouté avec succès.', articleId: savedArticle._id });
-  } catch (error: any) {
-    res.status(500).json({ message: "Erreur lors de l'ajout de l'article.", error: error.message });
+    const nouvelArticle = new ArticleModel({
+      titre,
+      auteur,
+      contenu,
+      image: req.file ? `/uploads/${req.file.filename}` : '',
+    });
+    const saved = await nouvelArticle.save();
+    res.status(201).json({ message: 'Article ajouté avec succès.', articleId: saved._id });
+  } catch (err: any) {
+    res.status(500).json({ message: "Erreur lors de l'ajout de l'article.", error: err.message });
   }
 });
 

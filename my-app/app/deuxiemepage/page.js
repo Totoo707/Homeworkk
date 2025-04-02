@@ -76,28 +76,33 @@ export default function Page() {
             }}
           >
             {articles?.length > 0 ? (
-              articles.map((article) => (
-                <motion.li
-                  key={article._id}
-                  className="bg-gray-800 p-6 rounded-3xl shadow-lg hover:scale-[1.03] hover:shadow-2xl transition-all duration-300 group cursor-pointer"
-                  onClick={() => router.push(`/deuxiemepage/${article._id}`)}
-                  whileHover={{ y: -5 }}
-                >
-                  <motion.img
-                    src={article.image}
-                    alt={article.titre}
-                    className="w-full h-52 object-cover rounded-2xl mb-4 group-hover:opacity-85 transition-opacity duration-300"
-                  />
-                  <motion.h5
-                    className="text-2xl font-bold text-white group-hover:text-yellow-400"
+              articles.map((article) => {
+                const imageUrl = article.image?.startsWith("http")
+                  ? article.image
+                  : `http://localhost:4000${article.image}`; // ✅ Correction ici
+
+                return (
+                  <motion.li
+                    key={article._id}
+                    className="bg-gray-800 p-6 rounded-3xl shadow-lg hover:scale-[1.03] hover:shadow-2xl transition-all duration-300 group cursor-pointer"
+                    onClick={() => router.push(`/deuxiemepage/${article._id}`)}
+                    whileHover={{ y: -5 }}
                   >
-                    {article.titre}
-                  </motion.h5>
-                  <motion.p className="text-md text-gray-400 mt-1">
-                    ✍️ <span className="font-medium">{article.auteur}</span>
-                  </motion.p>
-                </motion.li>
-              ))
+                    <motion.img
+                      src={imageUrl}
+                      alt={article.titre}
+                      className="w-full h-52 object-cover rounded-2xl mb-4"
+                    />
+
+                    <motion.h5 className="text-2xl font-bold text-white group-hover:text-yellow-400">
+                      {article.titre}
+                    </motion.h5>
+                    <motion.p className="text-md text-gray-400 mt-1">
+                      ✍️ <span className="font-medium">{article.auteur}</span>
+                    </motion.p>
+                  </motion.li>
+                );
+              })
             ) : (
               <motion.p className="col-span-full text-2xl text-gray-300 text-center">
                 Aucun article trouvé.

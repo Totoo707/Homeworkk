@@ -1,15 +1,10 @@
 import request from 'supertest';
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-// @ts-ignore
+import path from 'path';
+import fs from 'fs';
+import FormData from 'form-data';
 import app from '../../server.js';
-
-const mockArticle = {
-  titre: 'Titre de test',
-  auteur: 'Auteur Test',
-  contenu: 'Contenu de test',
-  image: 'https://example.com/image.jpg',
-};
 
 let mongoServer: MongoMemoryServer;
 
@@ -33,17 +28,52 @@ afterAll(async () => {
 });
 
 describe('📚 Intégration Articles', () => {
-  it('devrait ajouter un article avec succès', async () => {
-    const res = await request(app).post('/api/articles').send(mockArticle);
+  it('devrait ajouter un article avec image via multipart/form-data', async () => {
+    const imagePath = path.join(__dirname, 'test-image.jpg');
+    fs.writeFileSync(imagePath, 'fake image content');
+
+    const res = await request(app)
+      .post('/api/articles')
+      .field('titre', 'Titre Test')
+      .field('auteur', 'Auteur Test')
+      .field('contenu', 'Contenu Test')
+      .attach('image', imagePath);
+
+    fs.unlinkSync(imagePath);
+
     expect(res.status).toBe(201);
     expect(res.body).toHaveProperty('articleId');
   });
 
-  it('devrait récupérer les articles', async () => {
-    await request(app).post('/api/articles').send(mockArticle);
+  it('devrait retourner une erreur si un champ est manquant', async () => {
+    const res = await request(app)
+      .post('/api/articles')
+      .field('titre', 'Titre sans auteur')
+      .field('contenu', 'Contenu sans auteur');
+
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty('message', 'Données invalides.');
+  });
+
+  it('devrait récupérer tous les articles', async () => {
+    const imagePath = path.join(__dirname, 'test-image.jpg');
+    fs.writeFileSync(imagePath, 'fake image content');
+
+    await request(app)
+      .post('/api/articles')
+      .field('titre', 'Titre Fetch')
+      .field('auteur', 'Auteur Fetch')
+      .field('contenu', 'Contenu Fetch')
+      .attach('image', imagePath);
+
+    fs.unlinkSync(imagePath);
+
     const res = await request(app).get('/api/articles');
+
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
     expect(res.body.length).toBeGreaterThan(0);
   });
 });
+
+export {};

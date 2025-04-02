@@ -18,23 +18,30 @@ export default function Page() {
 
   const handleAddArticle = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+
     const titre = e.target.titre.value;
     const contenu = e.target.contenu.value;
     const auteur = e.target.auteur.value;
-    const image = e.target.image.value;
+    const image = e.target.image.files[0];
 
     if (!titre || !contenu || !auteur || !image) {
       setMessage("Tous les champs sont obligatoires.");
       return;
     }
 
+    formData.append("titre", titre);
+    formData.append("contenu", contenu);
+    formData.append("auteur", auteur);
+    formData.append("image", image);
+
     try {
       const response = await axios.post(
         "http://localhost:4000/api/articles",
-        { titre, contenu, auteur, image },
+        formData,
         {
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
@@ -92,11 +99,7 @@ export default function Page() {
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.2 }}
           >
-            {[
-              { label: "Titre", name: "titre", type: "text", placeholder: "Titre de l'article" },
-              { label: "Auteur", name: "auteur", type: "text", placeholder: "Nom de l'auteur" },
-              { label: "URL de l'image", name: "image", type: "text", placeholder: "URL de l'image" },
-            ].map((field, index) => (
+            {[{ label: "Titre", name: "titre", type: "text" }, { label: "Auteur", name: "auteur", type: "text" }].map((field, index) => (
               <motion.div
                 key={field.name}
                 initial={{ opacity: 0, x: -30 }}
@@ -111,10 +114,27 @@ export default function Page() {
                   id={field.name}
                   name={field.name}
                   className="w-full p-3 bg-gray-800 text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
-                  placeholder={field.placeholder}
+                  placeholder={field.label}
                 />
               </motion.div>
             ))}
+
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, delay: 0.4 }}
+            >
+              <label htmlFor="image" className="block text-lg font-medium mb-2 text-gray-300">
+                Image
+              </label>
+              <input
+                type="file"
+                id="image"
+                name="image"
+                accept="image/*"
+                className="w-full p-3 bg-gray-800 text-white border border-gray-600 rounded-lg"
+              />
+            </motion.div>
 
             <motion.div
               initial={{ opacity: 0, x: -30 }}
