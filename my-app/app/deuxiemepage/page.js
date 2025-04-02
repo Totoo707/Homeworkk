@@ -1,115 +1,181 @@
 "use client";
 
-import useSWR from "swr";
-import axios from "axios";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 import { motion } from "framer-motion";
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { ArrowUpDown, LayoutGrid, List } from "lucide-react";
 
-// Axios fetcher pour SWR
-const fetcher = (url) => axios.get(url).then((res) => res.data);
+const fetchArticles = async ({ page, limit, search, sortBy, order }) => {
+  try {
+    const res = await axios.get("http://localhost:4000/api/articles", {
+      params: { page, limit, search, sortBy, order },
+    });
+    return res.data;
+  } catch (err) {
+    console.error("Erreur de récupération des articles :", err);
+    return { articles: [], total: 0, hasMore: false };
+  }
+};
 
-export default function Page() {
+export default function ArticlesPage() {
   const router = useRouter();
+  const [articles, setArticles] = useState([]);
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [total, setTotal] = useState(0);
+  const [view, setView] = useState("grid");
+  const [sortBy, setSortBy] = useState("date");
+  const [order, setOrder] = useState("desc");
+  const limit = 8;
 
-  const { data: articles, error, isLoading } = useSWR(
-    "http://localhost:4000/api/articles",
-    fetcher
-  );
+  const loadArticles = useCallback(async () => {
+    const data = await fetchArticles({ page, limit, search, sortBy, order });
+    if (page === 1) setArticles(data.articles);
+    else setArticles((prev) => [...prev, ...data.articles]);
+    setHasMore(data.hasMore);
+    setTotal(data.total);
+  }, [page, search, sortBy, order]);
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-900">
-        <div className="text-2xl font-semibold text-white animate-pulse">
-          Chargement...
-        </div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    loadArticles();
+  }, [loadArticles]);
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-900 text-red-400">
-        Erreur lors du chargement des articles.
-      </div>
-    );
-  }
+  const toggleSort = (field) => {
+    if (sortBy === field) setOrder(order === "asc" ? "desc" : "asc");
+    else {
+      setSortBy(field);
+      setOrder("asc");
+    }
+    setPage(1);
+  };
+
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+    setPage(1);
+  };
 
   return (
-    <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 min-h-screen text-white">
-      {/* Fond décoratif animé */}
-      <motion.div
-        className="absolute inset-0 z-0 opacity-20 bg-cover blur-sm"
-        style={{
-          backgroundImage:
-            "url('https://img.freepik.com/photos-premium/etoiles-dans-ciel-lumiere-etoilee-nuit-etoilee-voie-lactee-arriere-plan-cosmique-espace-arriere-plan-etoile_303714-980.jpg?w=1480')",
-        }}
-        animate={{ y: ["0%", "5%"], opacity: [0.2, 0.1] }}
-        transition={{
-          duration: 40,
-          repeat: Infinity,
-          repeatType: "reverse",
-          ease: "easeInOut",
-        }}
-      />
+    <div className="relative min-h-screen bg-gray-900 text-white px-6 py-10">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex justify-between items-center mb-10">
+          <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500">
+            Articles ({total})
+          </h2>
+          <div className="flex gap-2 items-center">
+            <Input
+              className="bg-gray-800 text-white border-gray-600 placeholder:text-gray-400"
+              type="text"
+              placeholder="Rechercher..."
+              value={search}
+              onChange={handleSearch}
+            />
+            <Button variant="outline" size="icon" onClick={() => setView("grid")}>
+              <LayoutGrid className="w-5 h-5" />
+            </Button>
+            <Button variant="outline" size="icon" onClick={() => setView("table")}>
+              <List className="w-5 h-5" />
+            </Button>
+          </div>
+        </div>
 
-      <div className="relative z-10 container mx-auto px-6 py-20">
-        <motion.h2
-          className="text-5xl lg:text-6xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500 mb-20"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-        >
-          📰 Tous les Articles
-        </motion.h2>
-
-        <div className="w-full max-w-7xl mx-auto">
-          <motion.ul
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-10"
+        {view === "table" ? (
+          <div className="overflow-x-auto rounded-xl bg-white text-black shadow-md">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead></TableHead>
+                  <TableHead className="cursor-pointer" onClick={() => toggleSort("titre")}>
+                    Titre <ArrowUpDown className="inline w-4 h-4" />
+                  </TableHead>
+                  <TableHead className="cursor-pointer" onClick={() => toggleSort("date")}>
+                    Date <ArrowUpDown className="inline w-4 h-4" />
+                  </TableHead>
+                  <TableHead className="cursor-pointer" onClick={() => toggleSort("auteur")}>
+                    Auteur <ArrowUpDown className="inline w-4 h-4" />
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {articles?.length > 0 ? (
+                  articles.map((article) => (
+                    <TableRow
+                      key={article._id}
+                      onClick={() => router.push(`/deuxiemepage/${article._id}`)}
+                      className="cursor-pointer hover:bg-gray-100"
+                    >
+                      <td>
+                        <img
+                          src={`http://localhost:4000${article.image}`}
+                          alt=""
+                          className="w-10 h-10 object-cover rounded-full"
+                        />
+                      </td>
+                      <td>{article.titre}</td>
+                      <td>{new Date(article.date).toLocaleDateString()}</td>
+                      <td>{article.auteur}</td>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <td colSpan={4} className="text-center text-gray-500">
+                      Aucun article trouvé
+                    </td>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        ) : (
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6"
             initial="hidden"
             animate="visible"
             variants={{
               hidden: { opacity: 0 },
-              visible: {
-                opacity: 1,
-                transition: { staggerChildren: 0.1, duration: 0.5 },
-              },
+              visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
             }}
           >
             {articles?.length > 0 ? (
-              articles.map((article) => {
-                const imageUrl = article.image?.startsWith("http")
-                  ? article.image
-                  : `http://localhost:4000${article.image}`; // ✅ Correction ici
-
-                return (
-                  <motion.li
-                    key={article._id}
-                    className="bg-gray-800 p-6 rounded-3xl shadow-lg hover:scale-[1.03] hover:shadow-2xl transition-all duration-300 group cursor-pointer"
-                    onClick={() => router.push(`/deuxiemepage/${article._id}`)}
-                    whileHover={{ y: -5 }}
-                  >
-                    <motion.img
-                      src={imageUrl}
-                      alt={article.titre}
-                      className="w-full h-52 object-cover rounded-2xl mb-4"
-                    />
-
-                    <motion.h5 className="text-2xl font-bold text-white group-hover:text-yellow-400">
-                      {article.titre}
-                    </motion.h5>
-                    <motion.p className="text-md text-gray-400 mt-1">
-                      ✍️ <span className="font-medium">{article.auteur}</span>
-                    </motion.p>
-                  </motion.li>
-                );
-              })
+              articles.map((article) => (
+                <motion.div
+                  key={article._id}
+                  className="bg-white rounded-xl shadow-md overflow-hidden cursor-pointer hover:shadow-xl text-black"
+                  onClick={() => router.push(`/deuxiemepage/${article._id}`)}
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <img
+                    src={`http://localhost:4000${article.image}`}
+                    alt={article.titre}
+                    className="w-full h-40 object-cover"
+                  />
+                  <div className="p-4">
+                    <h3 className="text-lg font-semibold mb-1">{article.titre}</h3>
+                    <p className="text-sm text-gray-600">{article.auteur}</p>
+                  </div>
+                </motion.div>
+              ))
             ) : (
-              <motion.p className="col-span-full text-2xl text-gray-300 text-center">
-                Aucun article trouvé.
-              </motion.p>
+              <p className="text-gray-400">Aucun article trouvé.</p>
             )}
-          </motion.ul>
-        </div>
+          </motion.div>
+        )}
+
+        {hasMore && (
+          <div className="flex justify-center mt-10">
+            <Button onClick={() => setPage((p) => p + 1)}>Charger plus</Button>
+          </div>
+        )}
       </div>
     </div>
   );

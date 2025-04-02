@@ -7,7 +7,6 @@ import Joi from 'joi';
 
 const router = express.Router();
 
-// Interface
 interface Article extends Document {
   titre: string;
   auteur: string;
@@ -16,7 +15,6 @@ interface Article extends Document {
   date?: Date;
 }
 
-// Schéma Mongoose
 const articleSchema = new Schema<Article>({
   titre: { type: String, required: true },
   auteur: { type: String, required: true },
@@ -27,14 +25,12 @@ const articleSchema = new Schema<Article>({
 
 const ArticleModel = mongoose.models.Article || model<Article>('Article', articleSchema);
 
-// Connexion MongoDB
 const connectDB = async () => {
   if (mongoose.connection.readyState === 0) {
     await mongoose.connect('mongodb://localhost:27017/maBaseDeDonnées');
   }
 };
 
-// Multer (upload d'image dans /uploads)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const dir = 'uploads/';
@@ -47,25 +43,49 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Joi (valide les champs texte)
 const articleSchemaJoi = Joi.object({
   titre: Joi.string().required(),
   auteur: Joi.string().required(),
   contenu: Joi.string().required(),
 });
 
-// ✅ GET /api/articles - tous les articles
-router.get('/', async (_req: Request, res: Response) => {
+// ✅ GET /api/articles → avec pagination, recherche, tri
+router.get('/', async (req: Request, res: Response) => {
+  await connectDB();
+
+  const { page = 1, limit = 8, search = '', sortBy = 'date', order = 'desc' } = req.query;
+
+  const pageNum = parseInt(page as string);
+  const limitNum = parseInt(limit as string);
+  const skip = (pageNum - 1) * limitNum;
+  const sortOrder = order === 'asc' ? 1 : -1;
+
+  const query = search
+    ? {
+        $or: [
+          { titre: { $regex: search, $options: 'i' } },
+          { auteur: { $regex: search, $options: 'i' } },
+          { contenu: { $regex: search, $options: 'i' } },
+        ],
+      }
+    : {};
+
   try {
-    await connectDB();
-    const articles = await ArticleModel.find();
-    res.json(articles);
-  } catch (err: any) {
-    res.status(500).json({ message: 'Erreur serveur', error: err.message });
+    const total = await ArticleModel.countDocuments(query);
+    const articles = await ArticleModel.find(query)
+      .sort({ [sortBy as string]: sortOrder })
+      .skip(skip)
+      .limit(limitNum);
+
+    const hasMore = skip + articles.length < total;
+
+    res.json({ articles, total, hasMore });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Erreur serveur', error: error.message });
   }
 });
 
-// ✅ GET /api/articles/:id - un article par ID
+// ✅ GET /api/articles/:id
 router.get('/:id', async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -76,16 +96,14 @@ router.get('/:id', async (req: Request, res: Response) => {
   try {
     await connectDB();
     const article = await ArticleModel.findById(id);
-    if (!article) {
-      return res.status(404).json({ message: 'Article introuvable' });
-    }
+    if (!article) return res.status(404).json({ message: 'Article introuvable' });
     res.json(article);
   } catch (error: any) {
-    res.status(500).json({ message: "Erreur de récupération de l'article", error: error.message });
+    res.status(500).json({ message: 'Erreur de récupération', error: error.message });
   }
 });
 
-// ✅ POST /api/articles - ajouter un article avec image
+// ✅ POST /api/articles
 router.post('/', upload.single('image'), async (req: Request, res: Response) => {
   const { titre, auteur, contenu } = req.body;
 
@@ -106,9 +124,9 @@ router.post('/', upload.single('image'), async (req: Request, res: Response) => 
       image: req.file ? `/uploads/${req.file.filename}` : '',
     });
     const saved = await nouvelArticle.save();
-    res.status(201).json({ message: 'Article ajouté avec succès.', articleId: saved._id });
+    res.status(201).json({ message: 'Article ajouté.', articleId: saved._id });
   } catch (err: any) {
-    res.status(500).json({ message: "Erreur lors de l'ajout de l'article.", error: err.message });
+    res.status(500).json({ message: "Erreur d'ajout", error: err.message });
   }
 });
 
