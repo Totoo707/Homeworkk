@@ -111,19 +111,18 @@ export default function ArticlesPage() {
                   articles.map((article) => (
                     <TableRow
                       key={article._id}
-                      onClick={() => router.push(`/deuxiemepage/${article._id}`)}
                       className="cursor-pointer hover:bg-gray-100"
                     >
-                      <td>
+                      <td onClick={() => router.push(`/deuxiemepage/${article._id}`)}>
                         <img
                           src={`http://localhost:4000${article.image}`}
                           alt=""
                           className="w-10 h-10 object-cover rounded-full"
                         />
                       </td>
-                      <td>{article.titre}</td>
-                      <td>{new Date(article.date).toLocaleDateString()}</td>
-                      <td>{article.auteur}</td>
+                      <td onClick={() => router.push(`/deuxiemepage/${article._id}`)}>{article.titre}</td>
+                      <td onClick={() => router.push(`/deuxiemepage/${article._id}`)}>{new Date(article.date).toLocaleDateString()}</td>
+                      <td onClick={() => router.push(`/deuxiemepage/${article._id}`)}>{article.auteur}</td>
                     </TableRow>
                   ))
                 ) : (
@@ -151,7 +150,7 @@ export default function ArticlesPage() {
                 <motion.div
                   key={article._id}
                   className="bg-white rounded-xl shadow-md overflow-hidden cursor-pointer hover:shadow-xl text-black"
-                  onClick={() => router.push(`/deuxiemepage/${article._id}`)}
+                  onClick={() => router.push(`/deuxiemepage/${article._id}`)} // Rendre chaque carte cliquable
                   whileHover={{ scale: 1.02 }}
                 >
                   <img
