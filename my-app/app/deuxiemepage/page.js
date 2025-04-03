@@ -37,19 +37,40 @@ export default function ArticlesPage() {
   const [view, setView] = useState("grid");
   const [sortBy, setSortBy] = useState("date");
   const [order, setOrder] = useState("desc");
-  const limit = 8;
+  const limit = 15; // Pagination de 15 articles par appel
 
-  const loadArticles = useCallback(async () => {
-    const data = await fetchArticles({ page, limit, search, sortBy, order });
-    if (page === 1) setArticles(data.articles);
+  const loadArticles = async (currentPage) => {
+    const data = await fetchArticles({ page: currentPage, limit, search, sortBy, order });
+    if (currentPage === 1) setArticles(data.articles);
     else setArticles((prev) => [...prev, ...data.articles]);
     setHasMore(data.hasMore);
     setTotal(data.total);
-  }, [page, search, sortBy, order]);
+  };
 
   useEffect(() => {
-    loadArticles();
-  }, [loadArticles]);
+    loadArticles(1);
+  }, [search, sortBy, order]);
+
+  useEffect(() => {
+    loadArticles(page);
+  }, [page]);
+
+  // Scroll infini - déclenche quand on est proche du bas de la page
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + window.scrollY >= document.documentElement.offsetHeight - 100 &&
+        hasMore
+      ) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [hasMore]);
 
   const toggleSort = (field) => {
     if (sortBy === field) setOrder(order === "asc" ? "desc" : "asc");
@@ -92,16 +113,25 @@ export default function ArticlesPage() {
         {view === "table" ? (
           <div className="overflow-x-auto rounded-xl bg-white text-black shadow-md">
             <Table>
-              <TableHeader>
+              <TableHeader className="bg-gray-800 text-white">
                 <TableRow>
-                  <TableHead></TableHead>
-                  <TableHead className="cursor-pointer" onClick={() => toggleSort("titre")}>
+                  <TableHead className="p-3 font-semibold text-center">Image</TableHead>
+                  <TableHead
+                    className="cursor-pointer p-3 font-semibold text-center"
+                    onClick={() => toggleSort("titre")}
+                  >
                     Titre <ArrowUpDown className="inline w-4 h-4" />
                   </TableHead>
-                  <TableHead className="cursor-pointer" onClick={() => toggleSort("date")}>
+                  <TableHead
+                    className="cursor-pointer p-3 font-semibold text-center"
+                    onClick={() => toggleSort("date")}
+                  >
                     Date <ArrowUpDown className="inline w-4 h-4" />
                   </TableHead>
-                  <TableHead className="cursor-pointer" onClick={() => toggleSort("auteur")}>
+                  <TableHead
+                    className="cursor-pointer p-3 font-semibold text-center"
+                    onClick={() => toggleSort("auteur")}
+                  >
                     Auteur <ArrowUpDown className="inline w-4 h-4" />
                   </TableHead>
                 </TableRow>
@@ -113,16 +143,34 @@ export default function ArticlesPage() {
                       key={article._id}
                       className="cursor-pointer hover:bg-gray-100"
                     >
-                      <td onClick={() => router.push(`/deuxiemepage/${article._id}`)}>
+                      <td
+                        onClick={() => router.push(`/deuxiemepage/${article._id}`)}
+                        className="p-3"
+                      >
                         <img
                           src={`http://localhost:4000${article.image}`}
                           alt=""
-                          className="w-10 h-10 object-cover rounded-full"
+                          className="w-16 h-16 object-cover rounded-full"
                         />
                       </td>
-                      <td onClick={() => router.push(`/deuxiemepage/${article._id}`)}>{article.titre}</td>
-                      <td onClick={() => router.push(`/deuxiemepage/${article._id}`)}>{new Date(article.date).toLocaleDateString()}</td>
-                      <td onClick={() => router.push(`/deuxiemepage/${article._id}`)}>{article.auteur}</td>
+                      <td
+                        onClick={() => router.push(`/deuxiemepage/${article._id}`)}
+                        className="p-3 truncate"
+                      >
+                        {article.titre}
+                      </td>
+                      <td
+                        onClick={() => router.push(`/deuxiemepage/${article._id}`)}
+                        className="p-3 text-center"
+                      >
+                        {new Date(article.date).toLocaleDateString()}
+                      </td>
+                      <td
+                        onClick={() => router.push(`/deuxiemepage/${article._id}`)}
+                        className="p-3 text-center"
+                      >
+                        {article.auteur}
+                      </td>
                     </TableRow>
                   ))
                 ) : (
@@ -150,7 +198,7 @@ export default function ArticlesPage() {
                 <motion.div
                   key={article._id}
                   className="bg-white rounded-xl shadow-md overflow-hidden cursor-pointer hover:shadow-xl text-black"
-                  onClick={() => router.push(`/deuxiemepage/${article._id}`)} // Rendre chaque carte cliquable
+                  onClick={() => router.push(`/deuxiemepage/${article._id}`)}
                   whileHover={{ scale: 1.02 }}
                 >
                   <img
@@ -161,6 +209,7 @@ export default function ArticlesPage() {
                   <div className="p-4">
                     <h3 className="text-lg font-semibold mb-1">{article.titre}</h3>
                     <p className="text-sm text-gray-600">{article.auteur}</p>
+                    <p className="text-sm text-gray-500 truncate">{article.contenu}</p>
                   </div>
                 </motion.div>
               ))
