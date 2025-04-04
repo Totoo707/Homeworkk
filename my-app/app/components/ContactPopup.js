@@ -47,7 +47,7 @@ export default function ContactPopup({ onClose }) {
       transition={{ duration: 0.4 }}
     >
       <motion.div
-        className="bg-white text-gray-900 p-8 rounded-3xl shadow-2xl w-full max-w-2xl relative"
+        className="bg-white text-gray-900 p-8 rounded-3xl shadow-xl w-full max-w-xl relative"
         initial={{ scale: 0.9 }}
         animate={{ scale: 1 }}
         transition={{ duration: 0.3 }}

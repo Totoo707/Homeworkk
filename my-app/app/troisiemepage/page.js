@@ -1,3 +1,4 @@
+// page.tsx
 "use client";
 
 import { useAuth } from "../../context/AuthContext";
@@ -6,11 +7,12 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 
-export default function Page() {
+export default function AddArticlePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [message, setMessage] = useState("");
 
+  // Redirection si l'utilisateur n'est pas authentifié
   if (!loading && !user) {
     router.push("/connexion");
     return null;
@@ -36,16 +38,12 @@ export default function Page() {
     formData.append("image", image);
 
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/articles",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await axios.post("http://localhost:4000/api/articles", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
       if (response.status === 201) {
         setMessage("Article ajouté avec succès !");
@@ -81,9 +79,7 @@ export default function Page() {
 
           {message && (
             <motion.div
-              className={`${
-                message.includes("succès") ? "bg-green-500" : "bg-red-500"
-              } text-white text-lg font-semibold rounded-xl p-4 mb-6 w-full max-w-lg shadow-lg`}
+              className={`${message.includes("succès") ? "bg-green-500" : "bg-red-500"} text-white text-lg font-semibold rounded-xl p-4 mb-6 w-full max-w-lg shadow-lg`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6 }}
@@ -99,7 +95,10 @@ export default function Page() {
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.2 }}
           >
-            {[{ label: "Titre", name: "titre", type: "text" }, { label: "Auteur", name: "auteur", type: "text" }].map((field, index) => (
+            {[
+              { label: "Titre", name: "titre", type: "text" },
+              { label: "Auteur", name: "auteur", type: "text" },
+            ].map((field, index) => (
               <motion.div
                 key={field.name}
                 initial={{ opacity: 0, x: -30 }}
@@ -119,11 +118,7 @@ export default function Page() {
               </motion.div>
             ))}
 
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4, delay: 0.4 }}
-            >
+            <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, delay: 0.4 }}>
               <label htmlFor="image" className="block text-lg font-medium mb-2 text-gray-300">
                 Image
               </label>
@@ -136,11 +131,7 @@ export default function Page() {
               />
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4, delay: 0.6 }}
-            >
+            <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, delay: 0.6 }}>
               <label htmlFor="contenu" className="block text-lg font-medium mb-2 text-gray-300">
                 Contenu
               </label>

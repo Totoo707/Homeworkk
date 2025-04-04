@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 
 export default function ArticlePage() {
   const router = useRouter();
-  const params = useParams(); // 🔥 useParams retourne un objet
+  const params = useParams(); // useParams retourne un objet
   const id = params?.id;
 
   const [article, setArticle] = useState(null);
@@ -53,9 +53,8 @@ export default function ArticlePage() {
     );
   }
 
-  const imageUrl = article.image?.startsWith("http")
-    ? article.image
-    : `http://localhost:4000${article.image}`;
+  // Utilisation de la route dédiée pour récupérer l'image
+  const imageUrl = `http://localhost:4000/api/articles/${article._id}/image`;
 
   return (
     <motion.div
@@ -73,7 +72,7 @@ export default function ArticlePage() {
         </button>
       </div>
 
-      {/* Image */}
+      {/* Affichage de l'image via la route dédiée */}
       <motion.img
         src={imageUrl}
         alt={article.titre}
