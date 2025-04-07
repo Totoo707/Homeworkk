@@ -4,16 +4,16 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 const router = express.Router();
-const SECRET_KEY = 'votre_clé_secrète'; // à mettre en .env idéalement
+const SECRET_KEY = process.env.SECRET_KEY || 'votre_clé_secrète'; 
 
-// ✅ Interface TypeScript
+// Interface TypeScript pour un utilisateur
 interface Utilisateur extends Document {
   email: string;
   motDePasse: string;
   nom?: string;
 }
 
-// ✅ Schéma Mongoose
+// Schéma Mongoose
 const utilisateurSchema = new Schema<Utilisateur>({
   email: { type: String, required: true, unique: true },
   motDePasse: { type: String, required: true },
@@ -23,21 +23,19 @@ const utilisateurSchema = new Schema<Utilisateur>({
 const UtilisateurModel =
   mongoose.models.Utilisateur || model<Utilisateur>('Utilisateur', utilisateurSchema);
 
-// ✅ Connexion Mongoose
+// Fonction de connexion à MongoDB
 const connectDB = async () => {
   if (mongoose.connection.readyState === 0) {
-    await mongoose.connect('mongodb://localhost:27017/maBaseDeDonnées');
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/maBaseDeDonnées');
   }
 };
 
-// ✅ POST /api/auth-mongoose/login
+// Route de connexion (login)
 router.post('/login', async (req: Request, res: Response) => {
   const { email, motDePasse } = req.body;
 
   if (!email || !motDePasse) {
-    return res
-      .status(400)
-      .json({ message: 'Email et mot de passe sont obligatoires.' });
+    return res.status(400).json({ message: 'Email et mot de passe sont obligatoires.' });
   }
 
   try {
@@ -48,11 +46,7 @@ router.post('/login', async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Utilisateur non trouvé.' });
     }
 
-    const motDePasseValide = await bcrypt.compare(
-      motDePasse,
-      utilisateur.motDePasse
-    );
-
+    const motDePasseValide = await bcrypt.compare(motDePasse, utilisateur.motDePasse);
     if (!motDePasseValide) {
       return res.status(401).json({ message: 'Mot de passe incorrect.' });
     }
@@ -63,7 +57,7 @@ router.post('/login', async (req: Request, res: Response) => {
       { expiresIn: '1h' }
     );
 
-    // Pour plus de sécurité, tu peux retirer le mot de passe du retour
+    // Retourne l'utilisateur sans le mot de passe et le token
     const utilisateurSansMotDePasse = {
       _id: utilisateur._id,
       email: utilisateur.email,
@@ -73,8 +67,62 @@ router.post('/login', async (req: Request, res: Response) => {
     res.status(200).json({ user: utilisateurSansMotDePasse, token });
   } catch (error: any) {
     console.error('Erreur lors de la connexion :', error);
+    res.status(500).json({ message: 'Erreur lors de la connexion.', error: error.message });
+  }
+});
+
+
+
+// Route de changement de mot de passe
+router.post('/change-password', async (req: Request, res: Response) => {
+  const { ancienMotDePasse, nouveauMotDePasse } = req.body;
+
+  if (!ancienMotDePasse || !nouveauMotDePasse) {
+    return res.status(400).json({ message: 'Tous les champs sont obligatoires.' });
+  }
+
+  try {
+    await connectDB();
+    console.log('Connexion à la base de données réussie.');
+
+    // Récupére le token depuis les headers
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ message: 'Token manquant.' });
+    }
+
+    // Décodage du token
+    const decoded: any = jwt.verify(token, SECRET_KEY);
+    console.log('Token décodé :', decoded);
+
+    const utilisateur = await UtilisateurModel.findById(decoded.id);
+    if (!utilisateur) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé.' });
+    }
+
+    console.log('Utilisateur trouvé :', utilisateur);
+
+    // Vérification de l'ancien mot de passe
+    const motDePasseValide = await bcrypt.compare(ancienMotDePasse, utilisateur.motDePasse);
+    console.log('Résultat de la comparaison des mots de passe :', motDePasseValide);
+
+    if (!motDePasseValide) {
+      return res.status(401).json({ message: 'Ancien mot de passe incorrect.' });
+    }
+
+    // crypte le nouveau mot de passe
+    const hash = await bcrypt.hash(nouveauMotDePasse, 10);
+    utilisateur.motDePasse = hash;
+
+    // Sauvegarde dans la bdd
+    await utilisateur.save();
+    console.log('Mot de passe modifié avec succès.');
+
+    res.status(200).json({ message: 'Mot de passe modifié avec succès.' });
+  } catch (error: any) {
+    console.error('Erreur lors de la modification du mot de passe :', error);
     res.status(500).json({
-      message: 'Erreur lors de la connexion.',
+      message: 'Erreur lors de la modification du mot de passe.',
       error: error.message,
     });
   }

@@ -48,20 +48,12 @@ export default function Header() {
 
               {user && (
                 <>
-                  <li>
+                    <li>
                     <Link
-                      href="/troisiemepage"
+                      href="/pageuser"
                       className="hover:text-yellow-400 transition-colors duration-300"
                     >
-                      Ajouter un article
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/quatriemepage/voirmessage"
-                      className="hover:text-yellow-400 transition-colors duration-300"
-                    >
-                      Voir les messages
+                      Utilisateur
                     </Link>
                   </li>
                 </>
