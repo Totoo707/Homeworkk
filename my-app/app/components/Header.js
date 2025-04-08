@@ -12,19 +12,19 @@ export default function Header() {
   return (
     <>
       <header className="top-0 left-0 w-full bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 backdrop-blur-lg shadow-lg z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
-          <Link href="/" className="mb-3 md:mb-0">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col items-center">
+          <Link href="/" className="mb-6" aria-label="Page d'accueil - Next.js App">
             <h1 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-500 tracking-wide">
               Next.js App
             </h1>
           </Link>
 
-          <nav>
-            <ul className="flex flex-wrap justify-center md:justify-end gap-6 text-white font-medium text-lg">
+          <nav aria-label="Menu principal">
+            <ul className="flex flex-wrap justify-center gap-4">
               <li>
                 <Link
                   href="/"
-                  className="hover:text-yellow-400 transition-colors duration-300"
+                  className="block px-10 py-6 text-white font-medium text-xl hover:text-yellow-400 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
                 >
                   Accueil
                 </Link>
@@ -32,7 +32,7 @@ export default function Header() {
               <li>
                 <Link
                   href="/deuxiemepage"
-                  className="hover:text-yellow-400 transition-colors duration-300"
+                  className="block px-10 py-6 text-white font-medium text-xl hover:text-yellow-400 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
                 >
                   Articles
                 </Link>
@@ -40,30 +40,28 @@ export default function Header() {
               <li>
                 <button
                   onClick={() => setIsPopupOpen(true)}
-                  className="hover:text-yellow-400 transition-colors duration-300"
+                  className="block px-10 py-6 text-white font-medium text-xl hover:text-yellow-400 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                  aria-haspopup="dialog"
+                  aria-controls="contact-popup"
                 >
                   Contact
                 </button>
               </li>
-
               {user && (
-                <>
-                    <li>
-                    <Link
-                      href="/pageuser"
-                      className="hover:text-yellow-400 transition-colors duration-300"
-                    >
-                      Utilisateur
-                    </Link>
-                  </li>
-                </>
+                <li>
+                  <Link
+                    href="/pageuser"
+                    className="block px-10 py-6 text-white font-medium text-xl hover:text-yellow-400 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                  >
+                    Utilisateur
+                  </Link>
+                </li>
               )}
-
               {user ? (
                 <li>
                   <button
                     onClick={logout}
-                    className="hover:text-red-400 transition-colors duration-300"
+                    className="block px-10 py-6 text-white font-medium text-xl hover:text-red-400 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-red-400"
                   >
                     Déconnexion
                   </button>
@@ -72,7 +70,7 @@ export default function Header() {
                 <li>
                   <Link
                     href="/connexion"
-                    className="hover:text-yellow-400 transition-colors duration-300"
+                    className="block px-10 py-6 text-white font-medium text-xl hover:text-yellow-400 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
                   >
                     Connexion
                   </Link>
@@ -84,7 +82,9 @@ export default function Header() {
       </header>
 
       {/* Contact Popup */}
-      {isPopupOpen && <ContactPopup onClose={() => setIsPopupOpen(false)} />}
+      {isPopupOpen && (
+        <ContactPopup onClose={() => setIsPopupOpen(false)} id="contact-popup" />
+      )}
     </>
   );
 }
