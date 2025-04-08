@@ -85,13 +85,13 @@ router.post('/change-password', async (req: Request, res: Response) => {
     await connectDB();
     console.log('Connexion à la base de données réussie.');
 
-    // Récupére le token depuis les headers
+    
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
       return res.status(401).json({ message: 'Token manquant.' });
     }
 
-    // Décodage du token
+    
     const decoded: any = jwt.verify(token, SECRET_KEY);
     console.log('Token décodé :', decoded);
 
@@ -102,7 +102,7 @@ router.post('/change-password', async (req: Request, res: Response) => {
 
     console.log('Utilisateur trouvé :', utilisateur);
 
-    // Vérification de l'ancien mot de passe
+    
     const motDePasseValide = await bcrypt.compare(ancienMotDePasse, utilisateur.motDePasse);
     console.log('Résultat de la comparaison des mots de passe :', motDePasseValide);
 
@@ -110,11 +110,11 @@ router.post('/change-password', async (req: Request, res: Response) => {
       return res.status(401).json({ message: 'Ancien mot de passe incorrect.' });
     }
 
-    // crypte le nouveau mot de passe
+    
     const hash = await bcrypt.hash(nouveauMotDePasse, 10);
     utilisateur.motDePasse = hash;
 
-    // Sauvegarde dans la bdd
+    
     await utilisateur.save();
     console.log('Mot de passe modifié avec succès.');
 
