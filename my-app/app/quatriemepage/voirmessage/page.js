@@ -78,7 +78,7 @@ export default function VoirMessage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          📬 Messages Reçus
+          📬 Messages Reçus   
         </motion.h1>
 
         {message && (
@@ -130,7 +130,7 @@ export default function VoirMessage() {
         )}
         <motion.button
           type="button"
-          className="w-full py-3 mt-4 bg-gradient-to-r from-yellow-400 to-pink-500 text-white text-xl font-semibold rounded-xl shadow-lg hover:scale-105 transition-transform"
+          className="w-full py-3 mt-12 bg-gradient-to-r from-yellow-400 to-pink-500 text-white text-xl font-semibold rounded-xl shadow-lg hover:scale-105 transition-transform"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           transition={{ duration: 0.2 }}
