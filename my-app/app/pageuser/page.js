@@ -47,7 +47,7 @@ export default function VoirMessage() {
      <motion.button
      
               type="submit"
-              className="w-full py-3 mt-4 bg-gradient-to-r from-yellow-400 to-pink-500 text-white text-xl font-semibold rounded-xl shadow-lg hover:scale-105 transition-transform"
+              className="w-full opacity-70 py-3 mt-4 bg-gradient-to-r from-yellow-400 to-pink-500 text-white text-xl font-semibold rounded-xl shadow-lg hover:scale-105 transition-transform"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
@@ -59,7 +59,7 @@ export default function VoirMessage() {
     <motion.button
      
      type="submit"
-     className="w-full py-3 mt-4 bg-gradient-to-r from-yellow-400 to-pink-500 text-white text-xl font-semibold rounded-xl shadow-lg hover:scale-105 transition-transform"
+     className="w-full opacity-70 py-3 mt-4 bg-gradient-to-r from-yellow-400 to-pink-500 text-white text-xl font-semibold rounded-xl shadow-lg hover:scale-105 transition-transform"
      whileHover={{ scale: 1.05 }}
      whileTap={{ scale: 0.95 }}
      transition={{ duration: 0.2 }}
@@ -71,7 +71,7 @@ export default function VoirMessage() {
   <motion.button
      
      type="submit"
-     className="w-full py-3 mt-4 mb-64 bg-gradient-to-r from-yellow-400 to-pink-500 text-white text-xl font-semibold rounded-xl shadow-lg hover:scale-105 transition-transform"
+     className="w-full opacity-70 py-3 mt-4 mb-64 bg-gradient-to-r from-yellow-400 to-pink-500 text-white text-xl font-semibold rounded-xl shadow-lg hover:scale-105 transition-transform"
      whileHover={{ scale: 1.05 }}
      whileTap={{ scale: 0.95 }}
      transition={{ duration: 0.2 }}

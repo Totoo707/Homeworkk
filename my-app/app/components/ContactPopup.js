@@ -10,7 +10,7 @@ export default function ContactPopup({ onClose }) {
   const [responseMessage, setResponseMessage] = useState("");
 
   useEffect(() => {
-    // Ferme la popup quand Escape est pressé
+    // Ferme la popup quand Echap est pressé
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
         onClose();
