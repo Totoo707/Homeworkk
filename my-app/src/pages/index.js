@@ -21,7 +21,7 @@ export default function Page() {
         className="absolute inset-0 z-0 opacity-20 bg-cover"
         style={{
           backgroundImage:
-            "url('https://cdn.pixabay.com/photo/2017/08/30/07/52/space-2695569_1280.jpg')",
+            "url('https://th.bing.com/th/id/OIP.wdh3zCQRIArltbkXOfrl8wHaE8?rs=1&pid=ImgDetMain')",
         }}
         animate={
           shouldReduceMotion
