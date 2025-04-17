@@ -63,7 +63,7 @@ export default function VoirMessage() {
      whileHover={{ scale: 1.05 }}
      whileTap={{ scale: 0.95 }}
      transition={{ duration: 0.2 }}
-     onClick={() => router.push("../troisiemepage")}
+     onClick={() => router.push("../ajouterarticles")}
  >
      📰 Ajouter un article
   </motion.button>   
@@ -75,7 +75,7 @@ export default function VoirMessage() {
      whileHover={{ scale: 1.05 }}
      whileTap={{ scale: 0.95 }}
      transition={{ duration: 0.2 }}
-     onClick={() => router.push("../quatriemepage/voirmessage")}
+     onClick={() => router.push("../voirlesmessages")}
  >
      👀 Voir les messages des utilisateurs
   </motion.button>

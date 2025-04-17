@@ -284,11 +284,11 @@ export default function ArticlesPage() {
                         role="button"
                         tabIndex={0}
                         onClick={() =>
-                          router.push(`/deuxiemepage/${article._id}`)
+                          router.push(`/articles/${article._id}`)
                         }
                         onKeyDown={(e) =>
                           handleKeyDownRow(e, () =>
-                            router.push(`/deuxiemepage/${article._id}`)
+                            router.push(`/articles/${article._id}`)
                           )
                         }
                       >
@@ -303,7 +303,7 @@ export default function ArticlesPage() {
                           <span
                             onClick={(e) => {
                               e.stopPropagation();
-                              router.push(`/deuxiemepage/${article._id}`);
+                              router.push(`/articles/${article._id}`);
                             }}
                             className="cursor-pointer hover:underline"
                           >
@@ -347,10 +347,10 @@ export default function ArticlesPage() {
                   className="bg-white rounded-xl shadow-md overflow-hidden cursor-pointer hover:shadow-xl text-black"
                   role="button"
                   tabIndex={0}
-                  onClick={() => router.push(`/deuxiemepage/${article._id}`)}
+                  onClick={() => router.push(`/articles/${article._id}`)}
                   onKeyDown={(e) =>
                     handleKeyDownRow(e, () =>
-                      router.push(`/deuxiemepage/${article._id}`)
+                      router.push(`/articles/${article._id}`)
                     )
                   }
                   whileHover={{ scale: 1.02 }}
