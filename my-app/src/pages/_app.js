@@ -1,7 +1,7 @@
-import "./globals.css";
+import "../assets/css/globals.css";
 import { AuthProvider } from "../../context/AuthContext";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 export default function MyApp({ Component, pageProps }) {
   return (
