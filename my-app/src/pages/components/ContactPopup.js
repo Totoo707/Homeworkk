@@ -112,7 +112,7 @@ export default function ContactPopup({ onClose }) {
               htmlFor="name"
               className="block mb-2 text-lg text-gray-700 font-medium"
             >
-              Nom
+              Nom :
             </label>
             <input
               type="text"
@@ -129,7 +129,7 @@ export default function ContactPopup({ onClose }) {
               htmlFor="email"
               className="block mb-2 text-lg text-gray-700 font-medium"
             >
-              Email
+              Email :
             </label>
             <input
               type="email"
@@ -146,7 +146,7 @@ export default function ContactPopup({ onClose }) {
               htmlFor="message"
               className="block mb-2 text-lg text-gray-700 font-medium"
             >
-              Message
+              Message :
             </label>
             <textarea
               id="message"

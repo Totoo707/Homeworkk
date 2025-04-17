@@ -10,7 +10,6 @@ const fetcher = (url) => axios.get(url).then((res) => res.data);
 
 export default function Page() {
   const [showImage, setShowImage] = useState(false);
-  const { data: cards, error, isLoading } = useSWR("/api/cards", fetcher);
   const shouldReduceMotion = useReducedMotion();
 
   const handleButtonClick = () => setShowImage(!showImage);
@@ -90,50 +89,6 @@ export default function Page() {
               />
             </motion.section>
           )}
-
-          {/* CARDS SECTION */}
-          <motion.section
-            aria-labelledby="cards-heading"
-            className="w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10"
-            initial={shouldReduceMotion ? {} : "hidden"}
-            animate="visible"
-            variants={
-              shouldReduceMotion
-                ? {}
-                : {
-                    hidden: { opacity: 0, y: 50 },
-                    visible: {
-                      opacity: 1,
-                      y: 0,
-                      transition: { duration: 1, staggerChildren: 0.2 },
-                    },
-                  }
-            }
-          >
-            <h2 id="cards-heading" className="sr-only">Cartes</h2>
-            {isLoading ? (
-              <p role="status" className="text-xl text-gray-400">
-                Chargement des cartes...
-              </p>
-            ) : error ? (
-              <p role="alert" className="text-red-500 text-xl">
-                Erreur de chargement
-              </p>
-            ) : (
-              cards.map((card) => (
-                <motion.div
-                  key={card._id}
-                  className="bg-gray-800 p-6 rounded-2xl shadow-xl hover:scale-105 transition duration-300"
-                  whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
-                >
-                  <h3 className="text-2xl font-bold text-yellow-400 mb-2">
-                    {card["Card Title"]}
-                  </h3>
-                  <p className="text-gray-300">{card["Card p"]}</p>
-                </motion.div>
-              ))
-            )}
-          </motion.section>
 
           {/* FEATURES SECTION */}
           <motion.section

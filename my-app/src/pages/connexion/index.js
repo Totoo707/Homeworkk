@@ -1,7 +1,7 @@
 "use client"; // Assure-toi que ce fichier utilise React en mode client
 
 import { useState, useEffect } from "react";
-import { useAuth } from "../../context/AuthContext"; // Assure-toi d'importer correctement le contexte
+import { useAuth } from "../../../context/AuthContext"; // Assure-toi d'importer correctement le contexte
 import { useRouter } from "next/navigation"; // Utilisation de useRouter pour Next.js 13+
 import { motion } from "framer-motion"; // Importation de framer-motion
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../../context/AuthContext";
 import { useState } from "react";
 import ContactPopup from "./ContactPopup";
 
@@ -31,7 +31,7 @@ export default function Header() {
               </li>
               <li>
                 <Link
-                  href="/deuxiemepage"
+                  href="../deuxiemepage"
                   className="block px-10 py-6 text-white font-medium text-xl hover:text-yellow-400 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
                 >
                   Articles

@@ -1,8 +1,8 @@
 "use client";
 
-import { useAuth } from "../../context/AuthContext";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useAuth } from "../../../context/AuthContext";
+import { useRouter } from "next/router"; // si tu es bien en pages/
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 
@@ -11,10 +11,15 @@ export default function AddArticlePage() {
   const router = useRouter();
   const [message, setMessage] = useState("");
 
-  // Redirection si l'utilisateur n'est pas authentifié
+  // 🔐 Redirection déplacée dans useEffect
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/connexion");
+    }
+  }, [loading, user, router]);
+
   if (!loading && !user) {
-    router.push("/connexion");
-    return null;
+    return null; // évite le rendu pendant la redirection
   }
 
   const handleAddArticle = async (e) => {
